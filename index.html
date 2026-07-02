@@ -9,26 +9,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --jungle-dark:#123524;
-  --jungle-mid:#1F6E4B;
-  --jungle-line:#2E8B63;
-  --banana:#FFC93C;
-  --banana-deep:#F2A900;
-  --cream:#FFF6E0;
-  --choco:#3A2317;
+  --jungle-dark:#0A0D12;
+  --jungle-mid:#1B212B;
+  --jungle-line:rgba(245,179,1,.35);
+  --banana:#F5B301;
+  --banana-deep:#C98A00;
+  --cream:#F1EFE9;
+  --choco:#241A00;
   --danger:#E8523E;
-  --card:#164630;
-  --card-line:rgba(255,201,60,.18);
+  --green:#3ECF6E;
+  --red:#FF5C5C;
+  --card:#12161D;
+  --card-line:rgba(245,179,1,.18);
   --radius:22px;
-  --shadow:0 10px 30px rgba(0,0,0,.35);
+  --shadow:0 10px 30px rgba(0,0,0,.5);
 }
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
 html,body{margin:0;padding:0;height:100%;}
 body{
   font-family:'Vazirmatn',sans-serif;
   background:
-    radial-gradient(circle at 15% 0%, rgba(46,139,99,.35), transparent 55%),
-    radial-gradient(circle at 90% 10%, rgba(255,201,60,.12), transparent 45%),
+    radial-gradient(circle at 15% 0%, rgba(245,179,1,.10), transparent 55%),
+    radial-gradient(circle at 90% 10%, rgba(245,179,1,.08), transparent 45%),
     var(--jungle-dark);
   color:var(--cream);
   min-height:100vh;
@@ -60,21 +62,16 @@ body{
 .balance-num{font-family:'Lalezar',sans-serif;font-size:44px;color:var(--cream);display:flex;align-items:center;justify-content:center;gap:8px;}
 .balance-num .ico{font-size:34px;}
 
-.tap-zone{position:relative;display:flex;align-items:center;justify-content:center;margin:26px auto 10px;width:250px;height:250px;}
-.vine-ring{position:absolute;inset:0;border-radius:50%;border:3px dashed var(--jungle-line);animation:spin 40s linear infinite;pointer-events:none;}
-@keyframes spin{to{transform:rotate(360deg)}}
-.tap-circle{
-  width:210px;height:210px;border-radius:50%;
-  background:radial-gradient(circle at 35% 30%, #FFE9A8, var(--banana) 55%, var(--banana-deep) 100%);
-  box-shadow:0 0 0 8px rgba(255,201,60,.12), var(--shadow), inset 0 -8px 18px rgba(0,0,0,.18);
-  display:flex;align-items:center;justify-content:center;font-size:96px;
-  cursor:pointer;user-select:none;transition:transform .08s ease;
-  border:none;
+.monkey-zone{position:relative;display:flex;align-items:center;justify-content:center;margin:26px auto 10px;width:250px;min-height:200px;}
+.monkey-circle{
+  width:100%;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;
+  padding:14px;
 }
-.tap-circle:active{transform:scale(.92);}
-.float-plus{position:absolute;font-family:'Lalezar',sans-serif;color:var(--banana);font-size:22px;
-  pointer-events:none;animation:floatUp .8s ease forwards;}
-@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-70px) scale(1.3)}}
+.monkey-circle .mk-emoji{font-size:90px;margin-bottom:10px;filter:grayscale(.4) opacity(.7);}
+.monkey-circle.unlocked .mk-emoji{filter:none;}
+.monkey-circle .mk-text{font-size:13px;line-height:1.7;opacity:.85;padding:0 8px;}
+.monkey-circle .mk-lock{font-size:12px;color:var(--banana);font-weight:700;margin-top:6px;}
 
 .level-pill{
   margin:18px auto 4px;display:flex;align-items:center;gap:10px;background:var(--card);
@@ -131,12 +128,12 @@ body{
 
 /* ---------- Bottom nav ---------- */
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;
-  background:var(--jungle-dark);border-top:1px solid var(--card-line);display:flex;padding:8px 6px calc(8px + env(safe-area-inset-bottom));
-  gap:4px;z-index:40;}
-.nav-btn{flex:1;background:none;border:none;color:rgba(255,246,224,.55);display:flex;flex-direction:column;align-items:center;
-  gap:3px;font-size:11px;font-family:'Vazirmatn',sans-serif;font-weight:600;padding:6px 0;border-radius:12px;cursor:pointer;}
-.nav-btn .nb-ico{font-size:20px;}
-.nav-btn.active{color:var(--banana);background:rgba(255,201,60,.08);}
+  background:var(--jungle-dark);border-top:1px solid var(--card-line);display:flex;padding:6px 3px calc(6px + env(safe-area-inset-bottom));
+  gap:2px;z-index:40;overflow-x:auto;}
+.nav-btn{flex:1;min-width:52px;background:none;border:none;color:rgba(241,239,233,.55);display:flex;flex-direction:column;align-items:center;
+  gap:2px;font-size:9.5px;font-family:'Vazirmatn',sans-serif;font-weight:600;padding:6px 0;border-radius:12px;cursor:pointer;white-space:nowrap;}
+.nav-btn .nb-ico{font-size:17px;}
+.nav-btn.active{color:var(--banana);background:rgba(245,179,1,.1);}
 
 /* ---------- Drawer / Modal ---------- */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:80;display:none;}
@@ -182,6 +179,66 @@ body{
   border-radius:12px;margin-bottom:8px;font-size:13px;}
 .small-btn{padding:6px 10px;font-size:11px;border-radius:8px;}
 .empty-state{text-align:center;padding:30px 10px;opacity:.6;font-size:13px;}
+
+/* ---------- City ---------- */
+.city-hero{background:linear-gradient(145deg, rgba(245,179,1,.10), transparent);border:1px solid var(--card-line);
+  border-radius:var(--radius);padding:0;overflow:hidden;text-align:center;}
+.city-img{width:100%;height:170px;background:linear-gradient(160deg,#1B212B,#0A0D12);display:flex;align-items:center;
+  justify-content:center;font-size:64px;border-bottom:1px solid var(--card-line);}
+.city-img img{width:100%;height:100%;object-fit:cover;}
+.city-body{padding:18px;}
+.city-name{font-family:'Lalezar',sans-serif;font-size:24px;color:var(--banana);}
+.city-lv{font-size:12px;opacity:.75;margin-top:2px;}
+.city-progress{height:8px;border-radius:5px;background:rgba(255,255,255,.08);margin:14px 0;overflow:hidden;}
+.city-progress i{display:block;height:100%;background:linear-gradient(90deg,var(--banana-deep),var(--banana));}
+.city-cost-row{display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.2);
+  border-radius:14px;padding:12px 14px;margin-top:6px;font-size:13px;}
+.tier-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px;}
+.tier-chip{background:rgba(0,0,0,.2);border-radius:10px;padding:8px 4px;text-align:center;font-size:10px;opacity:.55;}
+.tier-chip.on{opacity:1;border:1px solid var(--banana);color:var(--banana);font-weight:700;}
+
+/* ---------- Stock market ---------- */
+.stock-item{background:var(--card);border:1px solid var(--card-line);border-radius:16px;padding:14px;margin-bottom:10px;cursor:pointer;}
+.stock-item .st-top{display:flex;align-items:center;justify-content:space-between;}
+.stock-item .st-name{font-weight:700;font-size:14px;}
+.stock-item .st-price{font-family:'Lalezar',sans-serif;font-size:18px;color:var(--cream);}
+.st-change{font-size:12px;font-weight:700;margin-top:2px;}
+.st-change.up{color:var(--green);}
+.st-change.down{color:var(--red);}
+.spark{width:90px;height:34px;}
+.stock-detail-head{text-align:center;padding:6px 0 10px;}
+.stock-detail-head .sd-name{font-family:'Lalezar',sans-serif;font-size:22px;color:var(--banana);}
+.stock-detail-head .sd-price{font-size:32px;font-weight:800;margin:4px 0;}
+.chart-wrap{background:rgba(0,0,0,.2);border-radius:16px;padding:10px;margin-bottom:14px;}
+.chart-wrap svg{width:100%;height:140px;display:block;}
+.trade-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.trade-box{background:rgba(0,0,0,.2);border-radius:14px;padding:12px;text-align:center;}
+.trade-box b{display:block;font-size:15px;color:var(--banana);margin-top:2px;}
+.qty-input{width:100%;padding:12px;border-radius:12px;border:1px solid var(--card-line);background:rgba(255,255,255,.05);
+  color:var(--cream);text-align:center;font-size:16px;margin-bottom:10px;}
+.trade-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.btn-buy{background:var(--green);color:#06210f;}
+.btn-sell{background:var(--red);color:#2a0505;}
+
+/* ---------- Profile ---------- */
+.profile-head{text-align:center;padding:6px 0 14px;}
+.profile-head .ph-brand{font-family:'Lalezar',sans-serif;font-size:20px;color:var(--banana);}
+.profile-head .ph-sub{font-size:12px;opacity:.7;margin-top:2px;}
+.profile-card{background:var(--card);border:1px solid var(--card-line);border-radius:var(--radius);padding:18px;}
+.profile-top{display:flex;align-items:center;gap:14px;}
+.profile-avatar{width:74px;height:74px;border-radius:50%;border:2px solid var(--banana);object-fit:cover;
+  display:flex;align-items:center;justify-content:center;font-family:'Lalezar',sans-serif;font-size:26px;
+  background:var(--jungle-mid);flex-shrink:0;}
+.profile-name{font-weight:800;font-size:17px;}
+.profile-id{font-size:11px;opacity:.6;margin-top:2px;}
+.profile-xp{margin-top:14px;}
+.profile-xp .px-row{display:flex;justify-content:space-between;font-size:11px;opacity:.75;margin-bottom:5px;}
+.profile-info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;}
+.pi-box{background:rgba(0,0,0,.2);border-radius:12px;padding:10px 6px;text-align:center;}
+.pi-box .pi-v{font-weight:700;font-size:13px;color:var(--banana);}
+.pi-box .pi-l{font-size:10px;opacity:.65;margin-top:3px;}
+.asset-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--card-line);font-size:13px;}
+.asset-row:last-child{border-bottom:none;}
 </style>
 </head>
 <body>
@@ -203,9 +260,12 @@ body{
       <div class="balance-num"><span class="ico">🍌</span><span id="balanceVal">0</span></div>
     </div>
 
-    <div class="tap-zone">
-      <div class="vine-ring"></div>
-      <button class="tap-circle" id="tapBtn">🍌</button>
+    <div class="monkey-zone">
+      <div class="monkey-circle" id="monkeyCircle">
+        <div class="mk-emoji" id="mkEmoji">🙈</div>
+        <div class="mk-text" id="mkText">تو هنوز میمون نوب و بی‌خاصیتی‌ای</div>
+        <div class="mk-lock" id="mkLock">توی سطح ۲ می‌تونی میمون بگیری</div>
+      </div>
     </div>
 
     <div class="level-pill" onclick="openLevels()">
@@ -284,6 +344,91 @@ body{
     </div>
   </div>
 
+  <!-- ================= CITY ================= -->
+  <div class="screen" id="screen-city">
+    <div class="section-title">شهر من</div>
+    <div class="city-hero">
+      <div class="city-img" id="cityImg">🏘️</div>
+      <div class="city-body">
+        <div class="city-name" id="cityName">دهکده میمونی</div>
+        <div class="city-lv" id="cityLv">سطح ۰ از ۲۰</div>
+        <div class="city-progress"><i id="cityBar" style="width:0%"></i></div>
+        <div class="city-cost-row">
+          <div>
+            <div class="muted" id="cityNextLabel">هزینه ارتقا به سطح ۱</div>
+            <b style="color:var(--banana)" id="cityCost">🍌 ۲۰۰</b>
+          </div>
+          <button class="btn btn-main" id="cityUpBtn" onclick="upgradeCity()">ارتقا</button>
+        </div>
+        <div class="tier-grid" id="tierGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= STOCK MARKET ================= -->
+  <div class="screen" id="screen-stock">
+    <div class="section-title">بورس موزستان</div>
+    <div id="stockListWrap"></div>
+
+    <div id="stockDetail" style="display:none">
+      <span class="back-link" onclick="closeStockDetail()">‹ بازگشت به بازار</span>
+      <div class="stock-detail-head">
+        <div class="sd-name" id="sdName">-</div>
+        <div class="sd-price" id="sdPrice">-</div>
+        <div class="st-change" id="sdChange">-</div>
+      </div>
+      <div class="chart-wrap"><svg id="sdChart" viewBox="0 0 300 140" preserveAspectRatio="none"></svg></div>
+      <div class="trade-grid">
+        <div class="trade-box"><span class="muted">موجودی شما</span><b id="sdOwned">0</b></div>
+        <div class="trade-box"><span class="muted">ارزش دارایی</span><b id="sdValue">🍌 0</b></div>
+      </div>
+      <input class="qty-input" id="sdQty" type="number" placeholder="تعداد سهم" min="1" value="1">
+      <div class="trade-actions">
+        <button class="btn btn-buy" onclick="tradeStock('buy')">خرید</button>
+        <button class="btn btn-sell" onclick="tradeStock('sell')">فروش</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PROFILE ================= -->
+  <div class="screen" id="screen-profile">
+    <div class="profile-head">
+      <div class="ph-brand">🍌 BANANA EMPIRE 🍌</div>
+      <div class="ph-sub">پروفایل کاربر</div>
+    </div>
+    <div class="profile-card">
+      <div class="profile-top">
+        <div class="profile-avatar" id="pAvatarWrap">؟</div>
+        <div>
+          <div class="profile-name" id="pName">کاربر مهمان</div>
+          <div class="profile-id" id="pId">ID: -</div>
+        </div>
+      </div>
+      <div class="profile-xp">
+        <div class="px-row"><span id="pLevelName">بچه میمون</span><span id="pXpText">0 / 0</span></div>
+        <div class="city-progress"><i id="pXpBar" style="width:0%"></i></div>
+      </div>
+      <div class="profile-info-grid">
+        <div class="pi-box"><div class="pi-v" id="pJoinDate">-</div><div class="pi-l">عضویت از</div></div>
+        <div class="pi-box"><div class="pi-v">همین حالا</div><div class="pi-l">آخرین ورود</div></div>
+        <div class="pi-box"><div class="pi-v" id="pTrades">0</div><div class="pi-l">معاملات</div></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <div class="row"><b>🎒 دارایی‌ها</b></div>
+      <div class="asset-row"><span>🍌 موز</span><b id="paBananas">0</b></div>
+      <div class="asset-row"><span>📈 ارزش سهام</span><b id="paStocks">0</b></div>
+      <div class="asset-row"><span>🏙️ سطح شهر</span><b id="paCity">0</b></div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <div class="row"><b>📊 سهام من</b></div>
+      <div id="pHoldings"><div class="empty-state">هنوز سهامی نخریدی</div></div>
+      <button class="btn btn-ghost" style="width:100%;margin-top:10px" onclick="showScreen('stock')">مشاهده بازار</button>
+    </div>
+  </div>
+
   <!-- ================= ADMIN ================= -->
   <div class="screen" id="screen-admin">
     <div class="section-title">پنل مدیریت</div>
@@ -341,6 +486,9 @@ body{
   <button class="nav-btn" data-s="tasks" onclick="showScreen('tasks')"><span class="nb-ico">📋</span>ماموریت‌ها</button>
   <button class="nav-btn" data-s="casino" onclick="showScreen('casino')"><span class="nb-ico">🎰</span>کازینو</button>
   <button class="nav-btn" data-s="lottery" onclick="showScreen('lottery')"><span class="nb-ico">🎁</span>قرعه‌کشی</button>
+  <button class="nav-btn" data-s="city" onclick="showScreen('city')"><span class="nb-ico">🏙️</span>شهر من</button>
+  <button class="nav-btn" data-s="stock" onclick="showScreen('stock')"><span class="nb-ico">📈</span>بورس</button>
+  <button class="nav-btn" data-s="profile" onclick="showScreen('profile')"><span class="nb-ico">👤</span>پروفایل</button>
 </div>
 
 <!-- ================= DRAWER ================= -->
@@ -384,8 +532,8 @@ body{
    ========================================================= */
 
 // ---------- CONFIG ----------
-const ADMIN_USERNAMES = ['TORK_01576']; // بدون @ — نام کاربری تلگرام ادمین را اینجا وارد کن
-const ADMIN_PASSWORD  = 'Hossein1388'; // برای تست خارج از تلگرام: آدرس را با #admin باز کن
+const ADMIN_USERNAMES = ['your_admin_username']; // بدون @ — نام کاربری تلگرام ادمین را اینجا وارد کن
+const ADMIN_PASSWORD  = 'admin123'; // برای تست خارج از تلگرام: آدرس را با #admin باز کن
 
 const LEVELS = [
   { key:'baby',    name:'بچه میمون',    emoji:'🐒', need:0 },
@@ -403,6 +551,33 @@ const WHEEL_PRIZES = [
   { label:'30,000', value:30000,  weight:6,  color:'#F2A900' },
   { label:'10,000', value:10000,  weight:6,  color:'#1F6E4B' },
   { label:'100,000',value:100000, weight:2,  color:'#E8523E' },
+];
+
+// ---------- City config ----------
+// تصاویر هر لایه (tier) رو اینجا جایگزین کن — می‌تونی src رو به آدرس عکس خودت تغییر بدی
+const CITY_TIERS = [
+  { name:'دهکده میمونی', emoji:'🏘️', from:0,  to:5, img:"صفر تا پنج.png"},
+  { name:'شهرک میمونی',  emoji:'🏙️', from:5,  to:10, img:"پنج تا ده.png"},
+  { name:'شهر میمونی',   emoji:'🌆', from:10, to:15, img:"ده تا پانزده.png"},
+  { name:'ایالت میمونی', emoji:'🏛️', from:15, to:20, img:"پانزده تا بیست.png"},
+];
+// هزینه ارتقا از سطح i به i+1 — ایندکس 0 یعنی هزینه‌ی سطح ۰ به ۱
+const CITY_COSTS = (()=>{
+  const base = [200,700,1200,1800,2500,5000]; // 0→1 ... 5→6 (ارتقای مقام)
+  const costs = [...base];
+  let last = 5000;
+  for(let lv=6; lv<20; lv++){ last += 400000; costs.push(last); }
+  return costs; // costs.length === 20
+})();
+function cityTierFor(level){
+  for(const t of CITY_TIERS){ if(level>=t.from && level<t.to) return t; }
+  return CITY_TIERS[CITY_TIERS.length-1];
+}
+
+// ---------- Stock market config ----------
+// ⚠️ قیمت‌ها فقط شبیه‌سازی سمت مرورگر هستن (بدون بک‌اند مشترک بین کاربرا)
+const STOCKS = [
+  { id:'moz', name:'سهام موز', base:120, vol:0.035 },
 ];
 
 // ---------- DB (localStorage-backed) ----------
@@ -426,6 +601,17 @@ const DB = {
 
   getAllUsers(){ return this.read('bl_users', {}); },
   saveUser(u){ const all=this.getAllUsers(); all[u.id]=u; this.write('bl_users', all); },
+
+  getStockData(){
+    let data = this.read('bl_stock_data', null);
+    if(!data){
+      data = {};
+      STOCKS.forEach(s=>{ data[s.id] = { price: s.base, history: [s.base], lastTick: Date.now() }; });
+      this.write('bl_stock_data', data);
+    }
+    return data;
+  },
+  setStockData(d){ this.write('bl_stock_data', d); },
 };
 
 // ---------- Telegram integration ----------
@@ -447,9 +633,16 @@ function loadOrCreateUser(){
   const all = DB.getAllUsers();
   let u = all[id];
   if(!u){
-    u = { id, name, username: tgUser?tgUser.username||'':'', bananas:0, lastWheelSpin:'', redeemedCodes:[], claimedTasks:[], banned:false, joinedAt: Date.now() };
+    u = { id, name, username: tgUser?tgUser.username||'':'', photoUrl: tgUser?tgUser.photo_url||'':'',
+      bananas:0, lastWheelSpin:'', redeemedCodes:[], claimedTasks:[], banned:false, joinedAt: Date.now(),
+      cityLevel:0, stocks:{}, trades:0 };
   } else {
     u.name = name; // keep name fresh
+    if(tgUser && tgUser.photo_url) u.photoUrl = tgUser.photo_url;
+    // migrate older accounts that don't have the newer fields yet
+    if(u.cityLevel===undefined) u.cityLevel = 0;
+    if(!u.stocks) u.stocks = {};
+    if(u.trades===undefined) u.trades = 0;
   }
   DB.saveUser(u);
   return u;
@@ -496,26 +689,30 @@ function renderHeader(){
 
   const isAdmin = ADMIN_USERNAMES.includes(CURRENT_USER.username) || sessionStorage.getItem('bl_admin')==='1';
   document.getElementById('adminEntry').style.display = isAdmin ? 'flex' : 'none';
+
+  renderMonkeyPanel();
 }
 
-// ---------- Tap to earn ----------
-document.getElementById('tapBtn').addEventListener('click', (e)=>{
-  CURRENT_USER.bananas += 1;
-  persistUser();
-  renderHeader();
-  spawnFloatPlus(e);
-});
-function spawnFloatPlus(e){
-  const zone = document.querySelector('.tap-zone');
-  const el = document.createElement('div');
-  el.className = 'float-plus';
-  el.textContent = '+1 🍌';
-  const rect = zone.getBoundingClientRect();
-  const x = (e.clientX||rect.left+rect.width/2) - rect.left + (Math.random()*40-20);
-  const y = (e.clientY||rect.top+rect.height/2) - rect.top;
-  el.style.left = x+'px'; el.style.top = y+'px';
-  zone.appendChild(el);
-  setTimeout(()=>el.remove(), 800);
+// ---------- Monkey panel (home) ----------
+// از سطح ۲ (نوچه میمون) به بعد قفل باز می‌شه. عکس میمون رو خودت بذار (id="mkEmoji" رو با <img> جایگزین کن)
+function renderMonkeyPanel(){
+  const {idx} = getLevelInfo(CURRENT_USER.bananas);
+  const circle = document.getElementById('monkeyCircle');
+  const emoji = document.getElementById('mkEmoji');
+  const text = document.getElementById('mkText');
+  const lock = document.getElementById('mkLock');
+  if(idx >= 1){
+    circle.classList.add('unlocked');
+    emoji.textContent = '🐵';
+    text.textContent = 'میمون تو آماده‌ست!';
+    lock.style.display = 'none';
+  } else {
+    circle.classList.remove('unlocked');
+    emoji.textContent = '🙈';
+    text.textContent = 'تو هنوز میمون نوب و بی‌خاصیتی‌ای';
+    lock.style.display = 'block';
+    lock.textContent = 'توی سطح ۲ می‌تونی میمون بگیری';
+  }
 }
 
 // ---------- Screens / nav ----------
@@ -527,6 +724,9 @@ function showScreen(name){
   if(name==='tasks') renderTasks();
   if(name==='lottery') renderLottery();
   if(name==='admin') renderAdmin();
+  if(name==='city') renderCity();
+  if(name==='stock'){ closeStockDetail(); renderStockList(); }
+  if(name==='profile') renderProfile();
 }
 
 // ---------- Drawer / modals ----------
@@ -843,10 +1043,215 @@ function adminToggleBan(id){
   renderAdminUsers();
 }
 
+// ---------- City ----------
+function renderCity(){
+  const lv = CURRENT_USER.cityLevel || 0;
+  const tier = cityTierFor(lv);
+  document.getElementById('cityImg').innerHTML = tier.img ? `<img src="${tier.img}" alt="">` : tier.emoji;
+  document.getElementById('cityName').textContent = tier.name;
+  document.getElementById('cityLv').textContent = 'سطح '+lv+' از ۲۰';
+  document.getElementById('cityBar').style.width = Math.round((lv/20)*100)+'%';
+
+  const btn = document.getElementById('cityUpBtn');
+  const costLabel = document.getElementById('cityNextLabel');
+  const costEl = document.getElementById('cityCost');
+  if(lv >= 20){
+    costLabel.textContent = 'شهر به بالاترین سطح رسیده';
+    costEl.textContent = '🏆 حداکثر';
+    btn.disabled = true;
+  } else {
+    const cost = CITY_COSTS[lv];
+    costLabel.textContent = (lv===5 ? 'هزینه ارتقای مقام (سطح ۶)' : 'هزینه ارتقا به سطح '+(lv+1));
+    costEl.textContent = '🍌 '+fmt(cost);
+    btn.disabled = CURRENT_USER.bananas < cost;
+  }
+
+  document.getElementById('tierGrid').innerHTML = CITY_TIERS.map(t=>{
+    const on = t===tier;
+    return `<div class="tier-chip ${on?'on':''}">${t.emoji}<br>${t.name}</div>`;
+  }).join('');
+}
+function upgradeCity(){
+  const lv = CURRENT_USER.cityLevel || 0;
+  if(lv>=20) return;
+  const cost = CITY_COSTS[lv];
+  if(CURRENT_USER.bananas < cost){ toast('موز کافی نداری'); return; }
+  CURRENT_USER.bananas -= cost;
+  CURRENT_USER.cityLevel = lv+1;
+  persistUser(); renderHeader(); renderCity();
+  toast('🎉 شهر ارتقا پیدا کرد!');
+}
+
+// ---------- Stock market ----------
+function stockPrice(id){ return DB.getStockData()[id].price; }
+function simulateStocks(){
+  const data = DB.getStockData();
+  const now = Date.now();
+  STOCKS.forEach(s=>{
+    const rec = data[s.id];
+    const elapsed = Math.min(20, Math.max(1, Math.round((now-rec.lastTick)/4000)));
+    for(let i=0;i<elapsed;i++){
+      const drift = (Math.random()-0.5) * s.vol * rec.price;
+      const meanPull = (s.base - rec.price) * 0.01; // mean reversion
+      rec.price = Math.max(1, rec.price + drift + meanPull);
+      rec.history.push(Math.round(rec.price*100)/100);
+      if(rec.history.length>40) rec.history.shift();
+    }
+    rec.lastTick = now;
+    rec.price = Math.round(rec.price*100)/100;
+  });
+  DB.setStockData(data);
+}
+function stockChangePct(hist){
+  if(hist.length<2) return 0;
+  const first = hist[0], last = hist[hist.length-1];
+  if(first===0) return 0;
+  return ((last-first)/first)*100;
+}
+function sparkSvg(hist, w, h, colorVar){
+  const min = Math.min(...hist), max = Math.max(...hist);
+  const range = (max-min)||1;
+  const step = w/(hist.length-1||1);
+  const pts = hist.map((v,i)=> `${(i*step).toFixed(1)},${(h-((v-min)/range)*h).toFixed(1)}`).join(' ');
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="${colorVar}" stroke-width="2"/></svg>`;
+}
+function renderStockList(){
+  simulateStocks();
+  const data = DB.getStockData();
+  const wrap = document.getElementById('stockListWrap');
+  wrap.innerHTML = STOCKS.map(s=>{
+    const rec = data[s.id];
+    const pct = stockChangePct(rec.history);
+    const up = pct>=0;
+    return `<div class="stock-item" onclick="openStock('${s.id}')">
+      <div class="st-top">
+        <div>
+          <div class="st-name">${s.name}</div>
+          <div class="st-price">🍌 ${fmt(Math.round(rec.price))}</div>
+          <div class="st-change ${up?'up':'down'}">${up?'▲':'▼'} ${Math.abs(pct).toFixed(1)}%</div>
+        </div>
+        ${sparkSvg(rec.history, 90, 34, up?'#3ECF6E':'#FF5C5C')}
+      </div>
+    </div>`;
+  }).join('');
+}
+let currentStockId = null;
+function openStock(id){
+  currentStockId = id;
+  document.getElementById('stockListWrap').style.display='none';
+  document.getElementById('stockDetail').style.display='block';
+  renderStockDetail();
+}
+function closeStockDetail(){
+  currentStockId = null;
+  document.getElementById('stockListWrap').style.display='block';
+  document.getElementById('stockDetail').style.display='none';
+}
+function renderStockDetail(){
+  if(!currentStockId) return;
+  simulateStocks();
+  const s = STOCKS.find(x=>x.id===currentStockId);
+  const rec = DB.getStockData()[currentStockId];
+  const pct = stockChangePct(rec.history);
+  const up = pct>=0;
+  document.getElementById('sdName').textContent = s.name;
+  document.getElementById('sdPrice').textContent = '🍌 '+fmt(Math.round(rec.price));
+  const chEl = document.getElementById('sdChange');
+  chEl.textContent = (up?'▲ ':'▼ ')+Math.abs(pct).toFixed(1)+'%';
+  chEl.className = 'st-change '+(up?'up':'down');
+
+  const owned = (CURRENT_USER.stocks[currentStockId])||0;
+  document.getElementById('sdOwned').textContent = owned;
+  document.getElementById('sdValue').textContent = '🍌 '+fmt(Math.round(owned*rec.price));
+
+  // big chart
+  const w=300,h=140, hist=rec.history;
+  const min=Math.min(...hist), max=Math.max(...hist), range=(max-min)||1;
+  const step = w/(hist.length-1||1);
+  const pts = hist.map((v,i)=> `${(i*step).toFixed(1)},${(h-((v-min)/range)*(h-16)-8).toFixed(1)}`).join(' ');
+  document.getElementById('sdChart').innerHTML = `<polyline points="${pts}" fill="none" stroke="${up?'#3ECF6E':'#FF5C5C'}" stroke-width="2.5"/>`;
+}
+function tradeStock(type){
+  if(!currentStockId) return;
+  const qty = parseInt(document.getElementById('sdQty').value)||0;
+  if(qty<=0){ toast('تعداد معتبر وارد کن'); return; }
+  const data = DB.getStockData();
+  const rec = data[currentStockId];
+  const price = rec.price;
+
+  if(type==='buy'){
+    const cost = Math.round(price*qty);
+    if(CURRENT_USER.bananas < cost){ toast('موز کافی نداری'); return; }
+    CURRENT_USER.bananas -= cost;
+    CURRENT_USER.stocks[currentStockId] = (CURRENT_USER.stocks[currentStockId]||0) + qty;
+    rec.price = price * (1 + Math.min(0.15, qty*0.004)); // demand nudges price up
+  } else {
+    const owned = CURRENT_USER.stocks[currentStockId]||0;
+    if(owned < qty){ toast('سهام کافی نداری'); return; }
+    const payout = Math.round(price*qty);
+    CURRENT_USER.bananas += payout;
+    CURRENT_USER.stocks[currentStockId] = owned - qty;
+    rec.price = price * (1 - Math.min(0.15, qty*0.004)); // supply nudges price down
+  }
+  rec.history.push(Math.round(rec.price*100)/100);
+  if(rec.history.length>40) rec.history.shift();
+  DB.setStockData(data);
+  CURRENT_USER.trades = (CURRENT_USER.trades||0) + 1;
+  persistUser(); renderHeader();
+  renderStockDetail();
+  toast(type==='buy' ? '✅ خرید انجام شد' : '✅ فروش انجام شد');
+}
+
+// ---------- Profile ----------
+function renderProfile(){
+  const {cur, next, pct} = getLevelInfo(CURRENT_USER.bananas);
+  const avatarWrap = document.getElementById('pAvatarWrap');
+  if(CURRENT_USER.photoUrl){
+    avatarWrap.innerHTML = `<img class="profile-avatar" src="${CURRENT_USER.photoUrl}" alt="">`;
+  } else {
+    avatarWrap.outerHTML = `<div class="profile-avatar" id="pAvatarWrap">${(CURRENT_USER.name||'?').replace('@','').slice(0,1).toUpperCase()}</div>`;
+  }
+  document.getElementById('pName').textContent = CURRENT_USER.name;
+  document.getElementById('pId').textContent = 'ID: '+CURRENT_USER.id;
+  document.getElementById('pLevelName').textContent = cur.emoji+' '+cur.name;
+  document.getElementById('pXpText').textContent = fmt(CURRENT_USER.bananas)+' / '+(next?fmt(next.need):'MAX');
+  document.getElementById('pXpBar').style.width = pct+'%';
+  document.getElementById('pJoinDate').textContent = new Date(CURRENT_USER.joinedAt).toLocaleDateString('fa-IR');
+  document.getElementById('pTrades').textContent = CURRENT_USER.trades||0;
+
+  simulateStocks();
+  const data = DB.getStockData();
+  let stockValue = 0;
+  const holdings = Object.entries(CURRENT_USER.stocks||{}).filter(([id,q])=>q>0);
+  holdings.forEach(([id,q])=>{ stockValue += (data[id]?data[id].price:0) * q; });
+
+  document.getElementById('paBananas').textContent = '🍌 '+fmt(CURRENT_USER.bananas);
+  document.getElementById('paStocks').textContent = '🍌 '+fmt(Math.round(stockValue));
+  document.getElementById('paCity').textContent = (CURRENT_USER.cityLevel||0)+' / 20';
+
+  const holdWrap = document.getElementById('pHoldings');
+  if(holdings.length===0){
+    holdWrap.innerHTML = '<div class="empty-state">هنوز سهامی نخریدی</div>';
+  } else {
+    holdWrap.innerHTML = holdings.map(([id,q])=>{
+      const s = STOCKS.find(x=>x.id===id);
+      const price = data[id].price;
+      return `<div class="asset-row"><span>${s?s.name:id} × ${q}</span><b>🍌 ${fmt(Math.round(price*q))}</b></div>`;
+    }).join('');
+  }
+}
+
 // ---------- Init ----------
 renderHeader();
 tryEnterAdminByHash();
 window.addEventListener('hashchange', tryEnterAdminByHash);
+
+// شبیه‌سازی نوسان قیمت سهام هر چند ثانیه — فقط وقتی صفحه بورس بازه رفرش می‌کنه
+setInterval(()=>{
+  const stockScreenActive = document.getElementById('screen-stock').classList.contains('active');
+  if(!stockScreenActive) return;
+  if(currentStockId){ renderStockDetail(); } else { renderStockList(); }
+}, 5000);
 </script>
 </body>
 </html>
