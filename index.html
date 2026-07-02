@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>موزستان | Banana Land</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --jungle-dark:#123524;
+  --jungle-mid:#1F6E4B;
+  --jungle-line:#2E8B63;
+  --banana:#FFC93C;
+  --banana-deep:#F2A900;
+  --cream:#FFF6E0;
+  --choco:#3A2317;
+  --danger:#E8523E;
+  --card:#164630;
+  --card-line:rgba(255,201,60,.18);
+  --radius:22px;
+  --shadow:0 10px 30px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;height:100%;}
+body{
+  font-family:'Vazirmatn',sans-serif;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(46,139,99,.35), transparent 55%),
+    radial-gradient(circle at 90% 10%, rgba(255,201,60,.12), transparent 45%),
+    var(--jungle-dark);
+  color:var(--cream);
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding-bottom:86px;position:relative;}
+
+/* ---------- Top bar ---------- */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 6px;}
+.profile-btn{
+  width:44px;height:44px;border-radius:14px;background:var(--card);
+  border:1px solid var(--card-line);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+}
+.profile-btn svg{width:20px;height:20px;stroke:var(--banana);}
+.brand{font-family:'Lalezar',sans-serif;font-size:22px;letter-spacing:.5px;color:var(--banana);text-shadow:0 2px 0 rgba(0,0,0,.25);}
+.brand span{color:var(--cream);}
+.topbar-spacer{width:44px;}
+
+/* ---------- Screens ---------- */
+.screen{display:none;flex:1;flex-direction:column;padding:0 18px;animation:fadeIn .25s ease;}
+.screen.active{display:flex;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ---------- Home ---------- */
+.balance-wrap{text-align:center;margin-top:6px;}
+.balance-label{font-size:13px;color:var(--banana);opacity:.85;font-weight:600;}
+.balance-num{font-family:'Lalezar',sans-serif;font-size:44px;color:var(--cream);display:flex;align-items:center;justify-content:center;gap:8px;}
+.balance-num .ico{font-size:34px;}
+
+.tap-zone{position:relative;display:flex;align-items:center;justify-content:center;margin:26px auto 10px;width:250px;height:250px;}
+.vine-ring{position:absolute;inset:0;border-radius:50%;border:3px dashed var(--jungle-line);animation:spin 40s linear infinite;pointer-events:none;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tap-circle{
+  width:210px;height:210px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #FFE9A8, var(--banana) 55%, var(--banana-deep) 100%);
+  box-shadow:0 0 0 8px rgba(255,201,60,.12), var(--shadow), inset 0 -8px 18px rgba(0,0,0,.18);
+  display:flex;align-items:center;justify-content:center;font-size:96px;
+  cursor:pointer;user-select:none;transition:transform .08s ease;
+  border:none;
+}
+.tap-circle:active{transform:scale(.92);}
+.float-plus{position:absolute;font-family:'Lalezar',sans-serif;color:var(--banana);font-size:22px;
+  pointer-events:none;animation:floatUp .8s ease forwards;}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-70px) scale(1.3)}}
+
+.level-pill{
+  margin:18px auto 4px;display:flex;align-items:center;gap:10px;background:var(--card);
+  border:1px solid var(--card-line);padding:10px 18px;border-radius:999px;cursor:pointer;max-width:320px;
+}
+.level-pill .lv-emoji{font-size:22px;}
+.level-pill .lv-text{flex:1;}
+.level-pill .lv-name{font-weight:700;font-size:14px;color:var(--banana);}
+.level-pill .lv-progress{height:6px;border-radius:4px;background:rgba(255,255,255,.08);margin-top:5px;overflow:hidden;}
+.level-pill .lv-progress i{display:block;height:100%;background:var(--banana);border-radius:4px;}
+.level-pill .chev{font-size:12px;opacity:.6;}
+
+/* ---------- Cards / generic ---------- */
+.section-title{font-family:'Lalezar',sans-serif;font-size:24px;color:var(--banana);margin:18px 0 12px;text-align:center;}
+.card{background:var(--card);border:1px solid var(--card-line);border-radius:var(--radius);padding:16px;margin-bottom:14px;}
+.btn{
+  border:none;border-radius:14px;padding:12px 18px;font-family:'Vazirmatn',sans-serif;font-weight:700;
+  cursor:pointer;font-size:14px;
+}
+.btn-main{background:var(--banana);color:var(--choco);}
+.btn-main:disabled{background:#5c5340;color:#a99;cursor:not-allowed;}
+.btn-ghost{background:transparent;border:1px solid var(--card-line);color:var(--cream);}
+.btn-danger{background:var(--danger);color:#fff;}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.badge{background:rgba(255,201,60,.15);color:var(--banana);font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;}
+.muted{opacity:.7;font-size:12px;}
+
+/* ---------- Tasks ---------- */
+.task-card .t-title{font-weight:700;font-size:15px;margin-bottom:4px;}
+.task-card .t-reward{color:var(--banana);font-size:13px;font-weight:700;}
+
+/* ---------- Casino ---------- */
+.game-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.game-tile{background:var(--card);border:1px solid var(--card-line);border-radius:var(--radius);padding:18px 10px;text-align:center;cursor:pointer;}
+.game-tile .g-emoji{font-size:38px;display:block;margin-bottom:8px;}
+.game-tile .g-name{font-weight:700;font-size:14px;}
+.wheel-wrap{position:relative;width:260px;height:260px;margin:16px auto;}
+#wheelCanvas{width:100%;height:100%;border-radius:50%;box-shadow:var(--shadow);border:6px solid var(--jungle-line);}
+.wheel-pointer{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:28px;filter:drop-shadow(0 3px 3px rgba(0,0,0,.4));}
+.back-link{color:var(--banana);font-size:13px;font-weight:700;cursor:pointer;margin-bottom:8px;display:inline-block;}
+.code-input{width:100%;padding:14px;border-radius:14px;border:1px solid var(--card-line);background:rgba(255,255,255,.05);
+  color:var(--cream);font-family:'Vazirmatn',sans-serif;font-size:16px;text-align:center;letter-spacing:2px;margin-bottom:12px;}
+
+/* ---------- Lottery ---------- */
+.lottery-hero{background:linear-gradient(145deg, rgba(255,201,60,.14), transparent);border:1px solid var(--card-line);
+  border-radius:var(--radius);padding:22px;text-align:center;}
+.lottery-hero .prize{font-family:'Lalezar',sans-serif;font-size:26px;color:var(--banana);}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+.stat-box{background:rgba(0,0,0,.15);border-radius:14px;padding:10px;text-align:center;}
+.stat-box b{display:block;font-size:16px;color:var(--banana);}
+.stat-box span{font-size:11px;opacity:.75;}
+.winner-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed var(--card-line);font-size:14px;}
+.winner-item:last-child{border-bottom:none;}
+
+/* ---------- Bottom nav ---------- */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;
+  background:var(--jungle-dark);border-top:1px solid var(--card-line);display:flex;padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+  gap:4px;z-index:40;}
+.nav-btn{flex:1;background:none;border:none;color:rgba(255,246,224,.55);display:flex;flex-direction:column;align-items:center;
+  gap:3px;font-size:11px;font-family:'Vazirmatn',sans-serif;font-weight:600;padding:6px 0;border-radius:12px;cursor:pointer;}
+.nav-btn .nb-ico{font-size:20px;}
+.nav-btn.active{color:var(--banana);background:rgba(255,201,60,.08);}
+
+/* ---------- Drawer / Modal ---------- */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:80;display:none;}
+.overlay.active{display:block;}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:78%;max-width:320px;background:var(--jungle-dark);
+  border-left:1px solid var(--card-line);z-index:90;transform:translateX(100%);transition:transform .25s ease;
+  padding:22px 18px;display:flex;flex-direction:column;gap:6px;}
+.drawer.active{transform:translateX(0);}
+.drawer h3{font-family:'Lalezar',sans-serif;color:var(--banana);font-size:20px;margin:0 0 14px;}
+.drawer-item{display:flex;align-items:center;gap:10px;padding:12px 8px;border-radius:12px;cursor:pointer;font-weight:600;}
+.drawer-item:hover{background:rgba(255,255,255,.05);}
+.drawer-user{display:flex;align-items:center;gap:10px;padding:10px 8px 18px;border-bottom:1px solid var(--card-line);margin-bottom:6px;}
+.drawer-avatar{width:44px;height:44px;border-radius:50%;background:var(--banana);display:flex;align-items:center;justify-content:center;
+  font-family:'Lalezar',sans-serif;font-size:18px;color:var(--choco);}
+
+.modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:88%;max-width:380px;background:var(--jungle-dark);
+  border:1px solid var(--card-line);border-radius:var(--radius);z-index:95;padding:20px;display:none;max-height:80vh;overflow-y:auto;}
+.modal.active{display:block;}
+.modal h3{font-family:'Lalezar',sans-serif;color:var(--banana);font-size:20px;margin:0 0 14px;text-align:center;}
+.level-row{display:flex;align-items:center;gap:12px;padding:10px 6px;border-radius:12px;}
+.level-row.current{background:rgba(255,201,60,.1);}
+.level-row .lv-e{font-size:26px;width:34px;text-align:center;}
+.level-row .lv-t{flex:1;}
+.level-row .lv-need{font-size:12px;opacity:.7;}
+
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--banana);
+  color:var(--cream);padding:10px 18px;border-radius:999px;font-size:13px;font-weight:700;z-index:120;opacity:0;
+  transition:opacity .25s ease, transform .25s ease;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+
+/* ---------- Admin ---------- */
+.admin-tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;padding-bottom:2px;}
+.admin-tab{flex:none;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--card-line);
+  font-size:12px;font-weight:700;cursor:pointer;color:var(--cream);}
+.admin-tab.active{background:var(--banana);color:var(--choco);border-color:var(--banana);}
+.admin-pane{display:none;}
+.admin-pane.active{display:block;}
+.field{margin-bottom:10px;}
+.field label{display:block;font-size:12px;margin-bottom:5px;color:var(--banana);font-weight:700;}
+.field input, .field textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--card-line);
+  background:rgba(255,255,255,.05);color:var(--cream);font-family:'Vazirmatn',sans-serif;font-size:14px;}
+.list-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px;background:rgba(0,0,0,.15);
+  border-radius:12px;margin-bottom:8px;font-size:13px;}
+.small-btn{padding:6px 10px;font-size:11px;border-radius:8px;}
+.empty-state{text-align:center;padding:30px 10px;opacity:.6;font-size:13px;}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ================= TOP BAR ================= -->
+  <div class="topbar">
+    <div class="profile-btn" onclick="openDrawer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </div>
+    <div class="brand">موز<span>ستان</span></div>
+    <div class="topbar-spacer" id="adminEntry" style="display:none;cursor:pointer" onclick="showScreen('admin')">⚙️</div>
+  </div>
+
+  <!-- ================= HOME ================= -->
+  <div class="screen active" id="screen-home">
+    <div class="balance-wrap">
+      <div class="balance-label">موجودی موز</div>
+      <div class="balance-num"><span class="ico">🍌</span><span id="balanceVal">0</span></div>
+    </div>
+
+    <div class="tap-zone">
+      <div class="vine-ring"></div>
+      <button class="tap-circle" id="tapBtn">🍌</button>
+    </div>
+
+    <div class="level-pill" onclick="openLevels()">
+      <div class="lv-emoji" id="lvEmoji">🐒</div>
+      <div class="lv-text">
+        <div class="lv-name" id="lvName">بچه میمون</div>
+        <div class="lv-progress"><i id="lvBar" style="width:0%"></i></div>
+      </div>
+      <div class="chev">›</div>
+    </div>
+  </div>
+
+  <!-- ================= TASKS ================= -->
+  <div class="screen" id="screen-tasks">
+    <div class="section-title">ماموریت‌ها</div>
+    <div id="tasksList"></div>
+  </div>
+
+  <!-- ================= CASINO ================= -->
+  <div class="screen" id="screen-casino">
+    <div class="section-title">کازینو</div>
+    <div id="casinoHome">
+      <div class="game-grid">
+        <div class="game-tile" onclick="openGame('wheel')">
+          <span class="g-emoji">🎡</span>
+          <div class="g-name">گردونه شانس</div>
+        </div>
+        <div class="game-tile" onclick="openGame('code')">
+          <span class="g-emoji">🔑</span>
+          <div class="g-name">کد جایزه</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="wheelGame" style="display:none">
+      <span class="back-link" onclick="closeGame()">‹ بازگشت</span>
+      <div class="wheel-wrap">
+        <div class="wheel-pointer">🔻</div>
+        <canvas id="wheelCanvas" width="260" height="260"></canvas>
+      </div>
+      <div style="text-align:center">
+        <button class="btn btn-main" id="spinBtn" onclick="spinWheel()">چرخوندن گردونه</button>
+        <div class="muted" id="spinNote" style="margin-top:8px"></div>
+      </div>
+    </div>
+
+    <div id="codeGame" style="display:none">
+      <span class="back-link" onclick="closeGame()">‹ بازگشت</span>
+      <div class="card" style="text-align:center">
+        <div style="font-size:40px;margin-bottom:6px">🔑</div>
+        <div class="muted" style="margin-bottom:14px">کد جایزه رو وارد کن و موز بگیر</div>
+        <input class="code-input" id="codeInput" placeholder="کد را وارد کنید">
+        <button class="btn btn-main" style="width:100%" onclick="redeemCode()">دریافت جایزه</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= LOTTERY ================= -->
+  <div class="screen" id="screen-lottery">
+    <div class="section-title">قرعه‌کشی</div>
+    <div class="lottery-hero">
+      <div class="muted">جایزه قرعه‌کشی</div>
+      <div class="prize" id="lotPrize">-</div>
+      <div class="stat-grid">
+        <div class="stat-box"><b id="lotTime">-</b><span>زمان قرعه‌کشی</span></div>
+        <div class="stat-box"><b id="lotWinnersCount">-</b><span>تعداد برندگان</span></div>
+        <div class="stat-box"><b id="lotParticipants">0</b><span>شرکت‌کنندگان</span></div>
+        <div class="stat-box"><b id="lotStatus">باز</b><span>وضعیت</span></div>
+      </div>
+      <button class="btn btn-main" style="width:100%;margin-top:16px" id="joinLotBtn" onclick="joinLottery()">شرکت در قرعه‌کشی</button>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="row"><b>برندگان</b></div>
+      <div id="winnersList"><div class="empty-state">هنوز قرعه‌کشی برگزار نشده</div></div>
+    </div>
+  </div>
+
+  <!-- ================= ADMIN ================= -->
+  <div class="screen" id="screen-admin">
+    <div class="section-title">پنل مدیریت</div>
+    <div class="admin-tabs">
+      <div class="admin-tab active" data-t="tasks" onclick="switchAdminTab('tasks')">ماموریت‌ها</div>
+      <div class="admin-tab" data-t="codes" onclick="switchAdminTab('codes')">کد جایزه</div>
+      <div class="admin-tab" data-t="lottery" onclick="switchAdminTab('lottery')">قرعه‌کشی</div>
+      <div class="admin-tab" data-t="users" onclick="switchAdminTab('users')">کاربران</div>
+    </div>
+
+    <div class="admin-pane active" id="admin-tasks">
+      <div class="card">
+        <div class="field"><label>عنوان ماموریت</label><input id="atTitle" placeholder="مثلا: عضویت در کانال"></div>
+        <div class="field"><label>لینک</label><input id="atLink" placeholder="https://t.me/..."></div>
+        <div class="field"><label>جایزه (موز)</label><input id="atReward" type="number" placeholder="5000"></div>
+        <button class="btn btn-main" style="width:100%" onclick="adminAddTask()">افزودن ماموریت</button>
+      </div>
+      <div id="adminTasksList"></div>
+    </div>
+
+    <div class="admin-pane" id="admin-codes">
+      <div class="card">
+        <div class="field"><label>کد فعال</label><input id="acCode" placeholder="BANANA500"></div>
+        <div class="field"><label>جایزه (موز)</label><input id="acReward" type="number" placeholder="500"></div>
+        <button class="btn btn-main" style="width:100%" onclick="adminSetCode()">ثبت کد</button>
+      </div>
+      <div class="card" id="adminCurrentCode"></div>
+    </div>
+
+    <div class="admin-pane" id="admin-lottery">
+      <div class="card">
+        <div class="field"><label>عنوان جایزه</label><input id="alPrize" placeholder="مثلا: آیفون ۱۵"></div>
+        <div class="field"><label>زمان قرعه‌کشی</label><input id="alTime" type="datetime-local"></div>
+        <div class="field"><label>تعداد برندگان</label><input id="alWinners" type="number" placeholder="3"></div>
+        <button class="btn btn-main" style="width:100%" onclick="adminSetLottery()">ذخیره تنظیمات</button>
+      </div>
+      <div class="card">
+        <div class="row"><b id="alParticipantsCount">0 شرکت‌کننده</b>
+          <button class="btn btn-danger small-btn" onclick="adminDrawLottery()">برگزاری قرعه‌کشی</button>
+        </div>
+        <div id="adminLotWinners" class="muted" style="margin-top:8px"></div>
+      </div>
+    </div>
+
+    <div class="admin-pane" id="admin-users">
+      <div id="adminUsersList"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ================= BOTTOM NAV ================= -->
+<div class="bottom-nav">
+  <button class="nav-btn active" data-s="home" onclick="showScreen('home')"><span class="nb-ico">🏠</span>خانه</button>
+  <button class="nav-btn" data-s="tasks" onclick="showScreen('tasks')"><span class="nb-ico">📋</span>ماموریت‌ها</button>
+  <button class="nav-btn" data-s="casino" onclick="showScreen('casino')"><span class="nb-ico">🎰</span>کازینو</button>
+  <button class="nav-btn" data-s="lottery" onclick="showScreen('lottery')"><span class="nb-ico">🎁</span>قرعه‌کشی</button>
+</div>
+
+<!-- ================= DRAWER ================= -->
+<div class="overlay" id="overlay" onclick="closeAllOverlays()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-user">
+    <div class="drawer-avatar" id="drawerInitial">؟</div>
+    <div>
+      <div style="font-weight:700" id="drawerName">کاربر مهمان</div>
+      <div class="muted" id="drawerLevel">بچه میمون</div>
+    </div>
+  </div>
+  <div class="drawer-item" onclick="toggleLanguage()">🌐 زبان: <span id="langLabel" style="margin-right:4px">فارسی</span></div>
+  <div class="drawer-item" onclick="showProfileName()">👤 نام کاربری</div>
+  <div class="drawer-item" onclick="logoutUser()" style="color:#ff8a7a">🚪 خروج</div>
+</div>
+
+<!-- ================= LEVEL MODAL ================= -->
+<div class="overlay" id="overlayModal" onclick="closeAllOverlays()"></div>
+<div class="modal" id="levelModal">
+  <h3>سطوح میمونی</h3>
+  <div id="levelListWrap"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   موزستان (Banana Land) — Telegram Mini App
+   ---------------------------------------------------------
+   ⚠️ NOTE ON DATA STORAGE:
+   This build stores everything in the browser's localStorage
+   so it works fully offline as a demo / single-device app.
+   Features that must be shared across ALL players in real
+   life — the lottery pool, the admin's user list, bans,
+   tasks/codes created by the admin — need a real backend
+   (server + database) to sync across every player's phone.
+   All data access goes through the DB.* helpers below, so
+   swapping localStorage for real API calls later only means
+   editing this one section.
+   ========================================================= */
+
+// ---------- CONFIG ----------
+const ADMIN_USERNAMES = ['TORK_01576']; // بدون @ — نام کاربری تلگرام ادمین را اینجا وارد کن
+const ADMIN_PASSWORD  = 'Hossein1388'; // برای تست خارج از تلگرام: آدرس را با #admin باز کن
+
+const LEVELS = [
+  { key:'baby',    name:'بچه میمون',    emoji:'🐒', need:0 },
+  { key:'thug',    name:'نوچه میمون',   emoji:'🙈', need:30000 },
+  { key:'monkey',  name:'میمون',        emoji:'🐵', need:80000 },   // 30,000 + 50,000
+  { key:'minister',name:'میمون وزیر',   emoji:'🦧', need:180000 },  // + 100,000
+  { key:'king',    name:'شاه میمون',    emoji:'👑', need:1680000 }, // + 1,500,000
+];
+
+const WHEEL_PRIZES = [
+  { label:'500',    value:500,    weight:26, color:'#1F6E4B' },
+  { label:'پوچ',    value:0,      weight:24, color:'#123524' },
+  { label:'2,000',  value:2000,   weight:16, color:'#1F6E4B' },
+  { label:'پوچ',    value:0,      weight:20, color:'#123524' },
+  { label:'30,000', value:30000,  weight:6,  color:'#F2A900' },
+  { label:'10,000', value:10000,  weight:6,  color:'#1F6E4B' },
+  { label:'100,000',value:100000, weight:2,  color:'#E8523E' },
+];
+
+// ---------- DB (localStorage-backed) ----------
+const DB = {
+  read(key, fallback){ try{ const v = localStorage.getItem(key); return v?JSON.parse(v):fallback; }catch(e){ return fallback; } },
+  write(key, val){ localStorage.setItem(key, JSON.stringify(val)); },
+
+  getTasks(){ return this.read('bl_tasks', [
+      {id:'t1', title:'عضویت در کانال', link:'https://t.me/your_channel', reward:5000},
+      {id:'t2', title:'عضویت در گروه', link:'https://t.me/your_group', reward:2000},
+    ]); },
+  setTasks(t){ this.write('bl_tasks', t); },
+
+  getCode(){ return this.read('bl_code', {code:'BANANA500', reward:500}); },
+  setCode(c){ this.write('bl_code', c); },
+
+  getLottery(){ return this.read('bl_lottery', {
+      prize:'جایزه ویژه موزستان', time:'', winnersCount:3,
+      participants:[], winners:[], drawn:false }); },
+  setLottery(l){ this.write('bl_lottery', l); },
+
+  getAllUsers(){ return this.read('bl_users', {}); },
+  saveUser(u){ const all=this.getAllUsers(); all[u.id]=u; this.write('bl_users', all); },
+};
+
+// ---------- Telegram integration ----------
+const tg = window.Telegram ? window.Telegram.WebApp : null;
+if (tg){ try{ tg.ready(); tg.expand(); }catch(e){} }
+const tgUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
+
+function getGuestId(){
+  let id = localStorage.getItem('bl_guest_id');
+  if(!id){ id = 'guest_' + Math.random().toString(36).slice(2,10); localStorage.setItem('bl_guest_id', id); }
+  return id;
+}
+
+let CURRENT_USER = loadOrCreateUser();
+
+function loadOrCreateUser(){
+  const id = tgUser ? String(tgUser.id) : getGuestId();
+  const name = tgUser ? (tgUser.username ? '@'+tgUser.username : [tgUser.first_name,tgUser.last_name].filter(Boolean).join(' ')) : 'کاربر مهمان';
+  const all = DB.getAllUsers();
+  let u = all[id];
+  if(!u){
+    u = { id, name, username: tgUser?tgUser.username||'':'', bananas:0, lastWheelSpin:'', redeemedCodes:[], claimedTasks:[], banned:false, joinedAt: Date.now() };
+  } else {
+    u.name = name; // keep name fresh
+  }
+  DB.saveUser(u);
+  return u;
+}
+
+function persistUser(){ DB.saveUser(CURRENT_USER); }
+
+// ---------- Helpers ----------
+function fmt(n){ return n.toLocaleString('en-US'); }
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast._h); toast._h = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+
+function getLevelInfo(bananas){
+  let idx = 0;
+  for(let i=0;i<LEVELS.length;i++){ if(bananas >= LEVELS[i].need) idx = i; }
+  const cur = LEVELS[idx];
+  const next = LEVELS[idx+1];
+  let pct = 100;
+  if(next){ pct = Math.min(100, Math.round(((bananas-cur.need)/(next.need-cur.need))*100)); }
+  return {cur, next, idx, pct};
+}
+
+// ---------- Ban check ----------
+if(CURRENT_USER.banned){
+  document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;padding:20px;font-family:Vazirmatn,sans-serif;color:#FFF6E0">حساب شما در موزستان مسدود شده است.</div>';
+  throw new Error('banned');
+}
+
+// ---------- Render: header / balance / level ----------
+function renderHeader(){
+  document.getElementById('balanceVal').textContent = fmt(CURRENT_USER.bananas);
+  const {cur, next, pct} = getLevelInfo(CURRENT_USER.bananas);
+  document.getElementById('lvEmoji').textContent = cur.emoji;
+  document.getElementById('lvName').textContent = cur.name;
+  document.getElementById('lvBar').style.width = pct+'%';
+
+  document.getElementById('drawerName').textContent = CURRENT_USER.name;
+  document.getElementById('drawerLevel').textContent = cur.name;
+  document.getElementById('drawerInitial').textContent = (CURRENT_USER.name||'?').replace('@','').slice(0,1).toUpperCase();
+
+  const isAdmin = ADMIN_USERNAMES.includes(CURRENT_USER.username) || sessionStorage.getItem('bl_admin')==='1';
+  document.getElementById('adminEntry').style.display = isAdmin ? 'flex' : 'none';
+}
+
+// ---------- Tap to earn ----------
+document.getElementById('tapBtn').addEventListener('click', (e)=>{
+  CURRENT_USER.bananas += 1;
+  persistUser();
+  renderHeader();
+  spawnFloatPlus(e);
+});
+function spawnFloatPlus(e){
+  const zone = document.querySelector('.tap-zone');
+  const el = document.createElement('div');
+  el.className = 'float-plus';
+  el.textContent = '+1 🍌';
+  const rect = zone.getBoundingClientRect();
+  const x = (e.clientX||rect.left+rect.width/2) - rect.left + (Math.random()*40-20);
+  const y = (e.clientY||rect.top+rect.height/2) - rect.top;
+  el.style.left = x+'px'; el.style.top = y+'px';
+  zone.appendChild(el);
+  setTimeout(()=>el.remove(), 800);
+}
+
+// ---------- Screens / nav ----------
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.s===name));
+  closeAllOverlays();
+  if(name==='tasks') renderTasks();
+  if(name==='lottery') renderLottery();
+  if(name==='admin') renderAdmin();
+}
+
+// ---------- Drawer / modals ----------
+function openDrawer(){
+  document.getElementById('overlay').classList.add('active');
+  document.getElementById('drawer').classList.add('active');
+}
+function closeAllOverlays(){
+  document.getElementById('overlay').classList.remove('active');
+  document.getElementById('drawer').classList.remove('active');
+  document.getElementById('overlayModal').classList.remove('active');
+  document.getElementById('levelModal').classList.remove('active');
+}
+function toggleLanguage(){
+  const el = document.getElementById('langLabel');
+  el.textContent = el.textContent==='فارسی' ? 'English' : 'فارسی';
+  toast('این نسخه دمو فقط زبان فارسی را پشتیبانی می‌کند');
+}
+function showProfileName(){ toast('نام شما: ' + CURRENT_USER.name); }
+function logoutUser(){
+  if(tg){ toast('برای خروج، مینی‌اپ را در تلگرام ببندید'); return; }
+  if(confirm('از حساب خارج شوید؟ (اطلاعات دستگاه پاک می‌شود)')){
+    localStorage.removeItem('bl_guest_id');
+    location.reload();
+  }
+}
+function openLevels(){
+  const wrap = document.getElementById('levelListWrap');
+  const {idx} = getLevelInfo(CURRENT_USER.bananas);
+  wrap.innerHTML = LEVELS.map((lv,i)=>{
+    const next = LEVELS[i+1];
+    return `<div class="level-row ${i===idx?'current':''}">
+      <div class="lv-e">${lv.emoji}</div>
+      <div class="lv-t">
+        <div style="font-weight:700">${lv.name}</div>
+        <div class="lv-need">${next? 'برای رسیدن به '+next.name+': '+fmt(next.need)+' موز' : 'بالاترین سطح'}</div>
+      </div>
+      ${i===idx?'<span class="badge">سطح فعلی</span>':''}
+    </div>`;
+  }).join('');
+  document.getElementById('overlayModal').classList.add('active');
+  document.getElementById('levelModal').classList.add('active');
+}
+
+// ---------- Tasks ----------
+function renderTasks(){
+  const tasks = DB.getTasks();
+  const list = document.getElementById('tasksList');
+  if(tasks.length===0){ list.innerHTML = '<div class="empty-state">در حال حاضر ماموریتی وجود ندارد</div>'; return; }
+  list.innerHTML = tasks.map(t=>{
+    const claimed = CURRENT_USER.claimedTasks.includes(t.id);
+    return `<div class="card task-card">
+      <div class="row">
+        <div>
+          <div class="t-title">${t.title}</div>
+          <div class="t-reward">🍌 ${fmt(t.reward)} موز</div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn btn-ghost" onclick="window.open('${t.link}','_blank')">رفتن به لینک</button>
+        <button class="btn ${claimed?'btn-ghost':'btn-main'}" ${claimed?'disabled':''} onclick="claimTask('${t.id}')">
+          ${claimed?'دریافت شد ✓':'دریافت جایزه'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function claimTask(id){
+  if(CURRENT_USER.claimedTasks.includes(id)) return;
+  const t = DB.getTasks().find(x=>x.id===id);
+  if(!t) return;
+  CURRENT_USER.claimedTasks.push(id);
+  CURRENT_USER.bananas += t.reward;
+  persistUser(); renderHeader(); renderTasks();
+  toast('🎉 '+fmt(t.reward)+' موز دریافت کردی!');
+}
+
+// ---------- Casino: wheel ----------
+function openGame(name){
+  document.getElementById('casinoHome').style.display='none';
+  document.getElementById('wheelGame').style.display = name==='wheel' ? 'block':'none';
+  document.getElementById('codeGame').style.display = name==='code' ? 'block':'none';
+  if(name==='wheel'){ drawWheel(0); updateSpinNote(); }
+}
+function closeGame(){
+  document.getElementById('casinoHome').style.display='block';
+  document.getElementById('wheelGame').style.display='none';
+  document.getElementById('codeGame').style.display='none';
+}
+function updateSpinNote(){
+  const note = document.getElementById('spinNote');
+  const btn = document.getElementById('spinBtn');
+  if(CURRENT_USER.lastWheelSpin===todayStr()){
+    note.textContent = 'فردا دوباره امتحان کن — هر روز فقط یک چرخش رایگان داری';
+    btn.disabled = true;
+  } else {
+    note.textContent = 'هر روز فقط یک بار می‌تونی گردونه رو بچرخونی';
+    btn.disabled = false;
+  }
+}
+let wheelRotation = 0;
+function drawWheel(rot){
+  const c = document.getElementById('wheelCanvas');
+  const ctx = c.getContext('2d');
+  const r = c.width/2;
+  const n = WHEEL_PRIZES.length;
+  const slice = (Math.PI*2)/n;
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.save();
+  ctx.translate(r,r);
+  ctx.rotate(rot);
+  for(let i=0;i<n;i++){
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.arc(0,0,r-4, i*slice, (i+1)*slice);
+    ctx.closePath();
+    ctx.fillStyle = WHEEL_PRIZES[i].color;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,246,224,.25)';
+    ctx.stroke();
+    ctx.save();
+    ctx.rotate(i*slice + slice/2);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#FFF6E0';
+    ctx.font = 'bold 13px Vazirmatn, sans-serif';
+    ctx.fillText(WHEEL_PRIZES[i].label, r-16, 5);
+    ctx.restore();
+  }
+  ctx.restore();
+}
+function pickWeightedIndex(){
+  const total = WHEEL_PRIZES.reduce((s,p)=>s+p.weight,0);
+  let r = Math.random()*total;
+  for(let i=0;i<WHEEL_PRIZES.length;i++){ r -= WHEEL_PRIZES[i].weight; if(r<=0) return i; }
+  return WHEEL_PRIZES.length-1;
+}
+function spinWheel(){
+  if(CURRENT_USER.lastWheelSpin===todayStr()) return;
+  const idx = pickWeightedIndex();
+  const n = WHEEL_PRIZES.length;
+  const slice = (Math.PI*2)/n;
+  const targetAngle = (Math.PI*2*6) + (Math.PI*2 - (idx*slice + slice/2)) ; // land pointer (top) on slice idx
+  const start = performance.now();
+  const duration = 3200;
+  const from = wheelRotation % (Math.PI*2);
+  const to = from + targetAngle;
+  document.getElementById('spinBtn').disabled = true;
+  function frame(now){
+    const t = Math.min(1, (now-start)/duration);
+    const ease = 1 - Math.pow(1-t, 4);
+    const rot = from + (to-from)*ease;
+    drawWheel(rot);
+    if(t<1){ requestAnimationFrame(frame); }
+    else{
+      wheelRotation = to;
+      finishSpin(idx);
+    }
+  }
+  requestAnimationFrame(frame);
+}
+function finishSpin(idx){
+  const prize = WHEEL_PRIZES[idx];
+  CURRENT_USER.lastWheelSpin = todayStr();
+  if(prize.value>0){ CURRENT_USER.bananas += prize.value; }
+  persistUser(); renderHeader(); updateSpinNote();
+  toast(prize.value>0 ? ('🎉 برنده '+fmt(prize.value)+' موز شدی!') : '😢 پوچ! فردا دوباره امتحان کن');
+}
+
+// ---------- Casino: code redeem ----------
+function redeemCode(){
+  const input = document.getElementById('codeInput');
+  const val = input.value.trim();
+  if(!val){ toast('یک کد وارد کن'); return; }
+  const active = DB.getCode();
+  if(val.toUpperCase() !== String(active.code).toUpperCase()){ toast('کد نامعتبر است'); return; }
+  if(CURRENT_USER.redeemedCodes.includes(active.code)){ toast('این کد را قبلاً استفاده کرده‌ای'); return; }
+  CURRENT_USER.redeemedCodes.push(active.code);
+  CURRENT_USER.bananas += active.reward;
+  persistUser(); renderHeader();
+  toast('🎉 '+fmt(active.reward)+' موز دریافت کردی!');
+  input.value='';
+}
+
+// ---------- Lottery ----------
+function renderLottery(){
+  const lot = DB.getLottery();
+  document.getElementById('lotPrize').textContent = lot.prize || '-';
+  document.getElementById('lotTime').textContent = lot.time ? new Date(lot.time).toLocaleString('fa-IR') : 'تعیین نشده';
+  document.getElementById('lotWinnersCount').textContent = lot.winnersCount;
+  document.getElementById('lotParticipants').textContent = lot.participants.length;
+  document.getElementById('lotStatus').textContent = lot.drawn ? 'برگزار شد' : 'باز';
+
+  const joined = lot.participants.some(p=>p.id===CURRENT_USER.id);
+  const btn = document.getElementById('joinLotBtn');
+  if(lot.drawn){ btn.textContent='قرعه‌کشی برگزار شد'; btn.disabled=true; }
+  else if(joined){ btn.textContent='شرکت کردی ✓'; btn.disabled=true; }
+  else { btn.textContent='شرکت در قرعه‌کشی'; btn.disabled=false; }
+
+  const wl = document.getElementById('winnersList');
+  wl.innerHTML = lot.winners.length
+    ? lot.winners.map(w=>`<div class="winner-item">🏆 ${w.name}</div>`).join('')
+    : '<div class="empty-state">هنوز قرعه‌کشی برگزار نشده</div>';
+}
+function joinLottery(){
+  const lot = DB.getLottery();
+  if(lot.drawn || lot.participants.some(p=>p.id===CURRENT_USER.id)) return;
+  lot.participants.push({id:CURRENT_USER.id, name:CURRENT_USER.name});
+  DB.setLottery(lot);
+  toast('✅ در قرعه‌کشی ثبت‌نام شدی');
+  renderLottery();
+}
+
+// ---------- Admin ----------
+function tryEnterAdminByHash(){
+  if(location.hash==='#admin' && sessionStorage.getItem('bl_admin')!=='1'){
+    const pass = prompt('رمز عبور پنل مدیریت:');
+    if(pass===ADMIN_PASSWORD){ sessionStorage.setItem('bl_admin','1'); renderHeader(); toast('وارد پنل مدیریت شدی'); showScreen('admin'); }
+  }
+}
+function switchAdminTab(name){
+  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.toggle('active', t.dataset.t===name));
+  document.querySelectorAll('.admin-pane').forEach(p=>p.classList.toggle('active', p.id==='admin-'+name));
+}
+function renderAdmin(){
+  renderAdminTasks(); renderAdminCode(); renderAdminLottery(); renderAdminUsers();
+}
+function renderAdminTasks(){
+  const tasks = DB.getTasks();
+  document.getElementById('adminTasksList').innerHTML = tasks.map(t=>`
+    <div class="list-item">
+      <div><b>${t.title}</b><br><span class="muted">🍌 ${fmt(t.reward)} — ${t.link}</span></div>
+      <button class="btn btn-danger small-btn" onclick="adminDeleteTask('${t.id}')">حذف</button>
+    </div>`).join('') || '<div class="empty-state">ماموریتی ثبت نشده</div>';
+}
+function adminAddTask(){
+  const title = document.getElementById('atTitle').value.trim();
+  const link = document.getElementById('atLink').value.trim();
+  const reward = parseInt(document.getElementById('atReward').value)||0;
+  if(!title||!link||!reward){ toast('همه فیلدها را پر کن'); return; }
+  const tasks = DB.getTasks();
+  tasks.push({id:'t'+Date.now(), title, link, reward});
+  DB.setTasks(tasks);
+  document.getElementById('atTitle').value=''; document.getElementById('atLink').value=''; document.getElementById('atReward').value='';
+  renderAdminTasks(); toast('ماموریت اضافه شد');
+}
+function adminDeleteTask(id){
+  DB.setTasks(DB.getTasks().filter(t=>t.id!==id));
+  renderAdminTasks();
+}
+function renderAdminCode(){
+  const c = DB.getCode();
+  document.getElementById('adminCurrentCode').innerHTML = `<div class="muted">کد فعال فعلی:</div><b>${c.code}</b> — 🍌 ${fmt(c.reward)} موز`;
+}
+function adminSetCode(){
+  const code = document.getElementById('acCode').value.trim();
+  const reward = parseInt(document.getElementById('acReward').value)||0;
+  if(!code||!reward){ toast('کد و جایزه را وارد کن'); return; }
+  DB.setCode({code, reward});
+  renderAdminCode(); toast('کد ثبت شد');
+}
+function renderAdminLottery(){
+  const lot = DB.getLottery();
+  document.getElementById('alPrize').value = lot.prize||'';
+  document.getElementById('alTime').value = lot.time||'';
+  document.getElementById('alWinners').value = lot.winnersCount||1;
+  document.getElementById('alParticipantsCount').textContent = lot.participants.length + ' شرکت‌کننده';
+  document.getElementById('adminLotWinners').textContent = lot.drawn ? ('برندگان: '+lot.winners.map(w=>w.name).join('، ')) : 'قرعه‌کشی هنوز برگزار نشده';
+}
+function adminSetLottery(){
+  const lot = DB.getLottery();
+  lot.prize = document.getElementById('alPrize').value.trim();
+  lot.time = document.getElementById('alTime').value;
+  lot.winnersCount = parseInt(document.getElementById('alWinners').value)||1;
+  DB.setLottery(lot);
+  toast('تنظیمات قرعه‌کشی ذخیره شد');
+}
+function adminDrawLottery(){
+  const lot = DB.getLottery();
+  if(lot.participants.length===0){ toast('شرکت‌کننده‌ای وجود ندارد'); return; }
+  if(!confirm('قرعه‌کشی برگزار شود؟ این عمل قابل بازگشت نیست.')) return;
+  const pool = [...lot.participants];
+  const winners = [];
+  const count = Math.min(lot.winnersCount, pool.length);
+  for(let i=0;i<count;i++){
+    const idx = Math.floor(Math.random()*pool.length);
+    winners.push(pool.splice(idx,1)[0]);
+  }
+  lot.winners = winners; lot.drawn = true;
+  DB.setLottery(lot);
+  renderAdminLottery();
+  toast('قرعه‌کشی برگزار شد 🎉');
+}
+function renderAdminUsers(){
+  const all = DB.getAllUsers();
+  const arr = Object.values(all);
+  const wrap = document.getElementById('adminUsersList');
+  if(arr.length===0){ wrap.innerHTML = '<div class="empty-state">کاربری ثبت نشده (فقط کاربران همین دستگاه نمایش داده می‌شوند)</div>'; return; }
+  wrap.innerHTML = arr.map(u=>{
+    const {cur} = getLevelInfo(u.bananas);
+    return `<div class="list-item">
+      <div>
+        <b>${u.name}</b><br>
+        <span class="muted">${cur.emoji} ${cur.name} — 🍌 ${fmt(u.bananas)}</span>
+      </div>
+      <button class="btn ${u.banned?'btn-ghost':'btn-danger'} small-btn" onclick="adminToggleBan('${u.id}')">${u.banned?'رفع مسدودیت':'مسدود کردن'}</button>
+    </div>`;
+  }).join('');
+}
+function adminToggleBan(id){
+  const all = DB.getAllUsers();
+  if(!all[id]) return;
+  all[id].banned = !all[id].banned;
+  DB.write('bl_users', all);
+  renderAdminUsers();
+}
+
+// ---------- Init ----------
+renderHeader();
+tryEnterAdminByHash();
+window.addEventListener('hashchange', tryEnterAdminByHash);
+</script>
+</body>
+</html>
