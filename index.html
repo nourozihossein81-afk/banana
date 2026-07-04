@@ -1,354 +1,442 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>موزستان | Banana Land</title>
+<title>موزستان | Banana Empire</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --jungle-dark:#0A0D12;
+  --jungle-dark:#07090C;
   --jungle-mid:#1B212B;
   --jungle-line:rgba(245,179,1,.35);
   --banana:#F5B301;
   --banana-deep:#C98A00;
+  --banana-light:#FFE29A;
   --cream:#F1EFE9;
   --choco:#241A00;
   --danger:#E8523E;
   --green:#3ECF6E;
   --red:#FF5C5C;
   --card:#12161D;
-  --card-line:rgba(245,179,1,.18);
+  --card-line:rgba(245,179,1,.16);
   --radius:22px;
-  --shadow:0 10px 30px rgba(0,0,0,.5);
+  --shadow:0 14px 36px rgba(0,0,0,.55);
+  --grad-gold:linear-gradient(135deg,var(--banana-light) 0%, var(--banana) 45%, var(--banana-deep) 100%);
+  --glow-gold:0 0 26px rgba(245,179,1,.28);
 }
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
 html,body{margin:0;padding:0;height:100%;}
 body{
   font-family:'Vazirmatn',sans-serif;
   background:
-    radial-gradient(circle at 15% 0%, rgba(245,179,1,.10), transparent 55%),
-    radial-gradient(circle at 90% 10%, rgba(245,179,1,.08), transparent 45%),
+    radial-gradient(circle at 15% -5%, rgba(245,179,1,.14), transparent 50%),
+    radial-gradient(circle at 100% 15%, rgba(245,179,1,.08), transparent 45%),
+    radial-gradient(circle at 0% 90%, rgba(245,179,1,.06), transparent 40%),
     var(--jungle-dark);
   color:var(--cream);
   min-height:100vh;
   overflow-x:hidden;
   position:relative;
 }
-.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding-bottom:86px;position:relative;}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.015) 0px, rgba(255,255,255,.015) 1px, transparent 1px, transparent 34px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.015) 0px, rgba(255,255,255,.015) 1px, transparent 1px, transparent 34px);
+}
+.icon{width:1em;height:1em;display:inline-block;vertical-align:-0.15em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.icon-fill{fill:currentColor;stroke:none;}
+.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding-bottom:96px;position:relative;z-index:1;}
 
 /* ---------- Top bar ---------- */
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 6px;}
-.profile-btn{
-  width:44px;height:44px;border-radius:14px;background:var(--card);
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 18px 6px;}
+.icon-btn{
+  width:46px;height:46px;border-radius:15px;background:linear-gradient(160deg,#171c26,#0d1015);
   border:1px solid var(--card-line);display:flex;align-items:center;justify-content:center;
-  cursor:pointer;
+  cursor:pointer;color:var(--banana);font-size:19px;box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.05);
+  transition:transform .15s ease, box-shadow .15s ease;
 }
-.profile-btn svg{width:20px;height:20px;stroke:var(--banana);}
-.brand{font-family:'Lalezar',sans-serif;font-size:22px;letter-spacing:.5px;color:var(--banana);text-shadow:0 2px 0 rgba(0,0,0,.25);}
-.brand span{color:var(--cream);}
-.topbar-spacer{width:44px;}
+.icon-btn:active{transform:scale(.92);}
+.brand{font-family:'Lalezar',sans-serif;font-size:23px;letter-spacing:.5px;display:flex;align-items:center;gap:6px;
+  background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 8px rgba(245,179,1,.25));}
+.brand .icon{width:22px;height:22px;color:var(--banana);-webkit-text-fill-color:initial;}
+.brand span{background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.topbar-spacer{width:46px;display:flex;align-items:center;justify-content:center;}
 
 /* ---------- Screens ---------- */
-.screen{display:none;flex:1;flex-direction:column;padding:0 18px;animation:fadeIn .25s ease;}
+.screen{display:none;flex:1;flex-direction:column;padding:0 18px;animation:fadeIn .3s cubic-bezier(.2,.8,.3,1);}
 .screen.active{display:flex;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 /* ---------- Home ---------- */
-.balance-wrap{text-align:center;margin-top:6px;}
-.balance-label{font-size:13px;color:var(--banana);opacity:.85;font-weight:600;}
-.balance-num{font-family:'Lalezar',sans-serif;font-size:44px;color:var(--cream);display:flex;align-items:center;justify-content:center;gap:8px;}
-.balance-num .ico{font-size:34px;}
+.balance-wrap{text-align:center;margin-top:8px;}
+.balance-label{font-size:12px;color:var(--banana);opacity:.9;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+.balance-num{font-family:'Lalezar',sans-serif;font-size:46px;display:flex;align-items:center;justify-content:center;gap:10px;
+  text-shadow:0 0 30px rgba(245,179,1,.25);margin-top:4px;}
+.balance-num .icon{width:36px;height:36px;color:var(--banana);filter:drop-shadow(0 4px 10px rgba(245,179,1,.35));}
 
-.monkey-zone{position:relative;display:flex;align-items:center;justify-content:center;margin:26px auto 10px;width:250px;min-height:200px;}
-.monkey-circle{
-  width:100%;
-  display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;
-  padding:14px;
-}
-.monkey-circle .mk-emoji{font-size:90px;margin-bottom:10px;filter:grayscale(.4) opacity(.7);}
-.monkey-circle.unlocked .mk-emoji{filter:none;}
-.monkey-circle .mk-text{font-size:13px;line-height:1.7;opacity:.85;padding:0 8px;}
-.monkey-circle .mk-lock{font-size:12px;color:var(--banana);font-weight:700;margin-top:6px;}
+.monkey-zone{position:relative;display:flex;align-items:center;justify-content:center;margin:22px auto 6px;width:260px;min-height:220px;}
+.monkey-glow{position:absolute;width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle, rgba(245,179,1,.22), transparent 70%);filter:blur(6px);animation:pulseGlow 3.5s ease-in-out infinite;}
+@keyframes pulseGlow{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+.monkey-circle{position:relative;width:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:14px;}
+.monkey-circle .mk-icon{width:108px;height:108px;color:var(--jungle-mid);filter:grayscale(1) opacity(.55);animation:floaty 4s ease-in-out infinite;}
+.monkey-circle.unlocked .mk-icon{color:var(--banana);filter:drop-shadow(0 8px 20px rgba(245,179,1,.4));}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.monkey-circle .mk-text{font-size:13.5px;line-height:1.8;opacity:.85;padding:10px 10px 0;font-weight:600;}
+.monkey-circle .mk-lock{display:flex;align-items:center;gap:5px;justify-content:center;font-size:12px;color:var(--banana);font-weight:700;margin-top:8px;}
 
 .level-pill{
-  margin:18px auto 4px;display:flex;align-items:center;gap:10px;background:var(--card);
-  border:1px solid var(--card-line);padding:10px 18px;border-radius:999px;cursor:pointer;max-width:320px;
+  margin:16px auto 4px;display:flex;align-items:center;gap:12px;background:linear-gradient(160deg,#161b24,#0e1116);
+  border:1px solid var(--card-line);padding:11px 16px;border-radius:999px;cursor:pointer;max-width:320px;width:100%;
+  box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.04);transition:transform .15s ease;
 }
-.level-pill .lv-emoji{font-size:22px;}
-.level-pill .lv-text{flex:1;}
-.level-pill .lv-name{font-weight:700;font-size:14px;color:var(--banana);}
-.level-pill .lv-progress{height:6px;border-radius:4px;background:rgba(255,255,255,.08);margin-top:5px;overflow:hidden;}
-.level-pill .lv-progress i{display:block;height:100%;background:var(--banana);border-radius:4px;}
-.level-pill .chev{font-size:12px;opacity:.6;}
+.level-pill:active{transform:scale(.98);}
+.level-pill .lv-badge{width:38px;height:38px;border-radius:50%;background:var(--grad-gold);display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;box-shadow:0 4px 12px rgba(245,179,1,.3);}
+.level-pill .lv-badge .icon{width:20px;height:20px;color:var(--choco);}
+.level-pill .lv-text{flex:1;min-width:0;}
+.level-pill .lv-name{font-weight:800;font-size:14px;color:var(--cream);}
+.level-pill .lv-progress{height:6px;border-radius:4px;background:rgba(255,255,255,.08);margin-top:6px;overflow:hidden;}
+.level-pill .lv-progress i{display:block;height:100%;background:var(--grad-gold);border-radius:4px;box-shadow:0 0 8px rgba(245,179,1,.5);}
+.level-pill .chev{color:var(--banana);opacity:.7;}
+
+/* ---------- Monkey care ---------- */
+.monkey-care{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:14px auto 4px;max-width:340px;width:100%;}
+.care-box{background:linear-gradient(160deg,#161b24,#0e1116);border:1px solid var(--card-line);border-radius:16px;
+  padding:12px 6px;text-align:center;cursor:pointer;box-shadow:var(--shadow);transition:transform .15s ease;}
+.care-box:active{transform:scale(.95);}
+.care-box .icon{width:22px;height:22px;color:var(--banana);margin-bottom:6px;}
+.care-box .cb-label{font-size:11px;font-weight:800;}
+.care-box .cb-status{font-size:9.5px;opacity:.65;margin-top:3px;line-height:1.4;}
+.care-box.needs-attn{border-color:var(--banana);box-shadow:0 0 0 1px var(--banana), var(--shadow);}
+.care-box.disabled-box{opacity:.55;}
 
 /* ---------- Cards / generic ---------- */
-.section-title{font-family:'Lalezar',sans-serif;font-size:24px;color:var(--banana);margin:18px 0 12px;text-align:center;}
-.card{background:var(--card);border:1px solid var(--card-line);border-radius:var(--radius);padding:16px;margin-bottom:14px;}
+.section-title{font-family:'Lalezar',sans-serif;font-size:25px;margin:18px 0 14px;text-align:center;display:flex;
+  align-items:center;justify-content:center;gap:8px;
+  background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 10px rgba(245,179,1,.2));}
+.section-title .icon{width:22px;height:22px;color:var(--banana);}
+.card{position:relative;background:linear-gradient(165deg,#151a23,#0c0e13);border:1px solid var(--card-line);border-radius:var(--radius);
+  padding:17px;margin-bottom:14px;box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.04);overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:16px;right:16px;height:1px;background:linear-gradient(90deg,transparent,rgba(245,179,1,.5),transparent);}
 .btn{
-  border:none;border-radius:14px;padding:12px 18px;font-family:'Vazirmatn',sans-serif;font-weight:700;
-  cursor:pointer;font-size:14px;
+  border:none;border-radius:14px;padding:13px 18px;font-family:'Vazirmatn',sans-serif;font-weight:800;
+  cursor:pointer;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  transition:transform .15s ease, filter .15s ease;position:relative;
 }
-.btn-main{background:var(--banana);color:var(--choco);}
-.btn-main:disabled{background:#5c5340;color:#a99;cursor:not-allowed;}
-.btn-ghost{background:transparent;border:1px solid var(--card-line);color:var(--cream);}
-.btn-danger{background:var(--danger);color:#fff;}
+.btn:active{transform:scale(.96);}
+.btn-main{background:var(--grad-gold);color:var(--choco);box-shadow:0 6px 18px rgba(245,179,1,.28), inset 0 1px 0 rgba(255,255,255,.4);}
+.btn-main:disabled{background:#3a3527;color:#8a8270;cursor:not-allowed;box-shadow:none;}
+.btn-ghost{background:rgba(255,255,255,.04);border:1px solid var(--card-line);color:var(--cream);}
+.btn-ghost:disabled{opacity:.5;cursor:not-allowed;}
+.btn-danger{background:linear-gradient(135deg,#ff7a68,var(--danger));color:#fff;box-shadow:0 6px 16px rgba(232,82,62,.3);}
 .row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
-.badge{background:rgba(255,201,60,.15);color:var(--banana);font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;}
-.muted{opacity:.7;font-size:12px;}
+.row b{display:flex;align-items:center;gap:6px;}
+.badge{background:rgba(245,179,1,.14);color:var(--banana);font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px;
+  display:inline-flex;align-items:center;gap:4px;}
+.muted{opacity:.65;font-size:12px;}
 
 /* ---------- Tasks ---------- */
-.task-card .t-title{font-weight:700;font-size:15px;margin-bottom:4px;}
-.task-card .t-reward{color:var(--banana);font-size:13px;font-weight:700;}
-
-/* ---------- Casino ---------- */
-.game-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.game-tile{background:var(--card);border:1px solid var(--card-line);border-radius:var(--radius);padding:18px 10px;text-align:center;cursor:pointer;}
-.game-tile .g-emoji{font-size:38px;display:block;margin-bottom:8px;}
-.game-tile .g-name{font-weight:700;font-size:14px;}
-.wheel-wrap{position:relative;width:260px;height:260px;margin:16px auto;}
-#wheelCanvas{width:100%;height:100%;border-radius:50%;box-shadow:var(--shadow);border:6px solid var(--jungle-line);}
-.wheel-pointer{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:28px;filter:drop-shadow(0 3px 3px rgba(0,0,0,.4));}
-.back-link{color:var(--banana);font-size:13px;font-weight:700;cursor:pointer;margin-bottom:8px;display:inline-block;}
-.code-input{width:100%;padding:14px;border-radius:14px;border:1px solid var(--card-line);background:rgba(255,255,255,.05);
-  color:var(--cream);font-family:'Vazirmatn',sans-serif;font-size:16px;text-align:center;letter-spacing:2px;margin-bottom:12px;}
+.task-card .t-title{font-weight:800;font-size:15px;margin-bottom:5px;display:flex;align-items:center;gap:7px;}
+.task-card .t-title .icon{color:var(--banana);width:16px;height:16px;}
+.task-card .t-reward{color:var(--banana);font-size:13px;font-weight:800;display:flex;align-items:center;gap:5px;}
+.task-hint{font-size:11px;color:var(--banana);opacity:.85;display:flex;align-items:center;gap:5px;margin-top:6px;}
 
 /* ---------- Lottery ---------- */
-.lottery-hero{background:linear-gradient(145deg, rgba(255,201,60,.14), transparent);border:1px solid var(--card-line);
-  border-radius:var(--radius);padding:22px;text-align:center;}
-.lottery-hero .prize{font-family:'Lalezar',sans-serif;font-size:26px;color:var(--banana);}
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
-.stat-box{background:rgba(0,0,0,.15);border-radius:14px;padding:10px;text-align:center;}
-.stat-box b{display:block;font-size:16px;color:var(--banana);}
-.stat-box span{font-size:11px;opacity:.75;}
-.winner-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed var(--card-line);font-size:14px;}
+.lottery-hero{position:relative;background:linear-gradient(150deg, rgba(245,179,1,.16), rgba(245,179,1,.02));border:1px solid var(--card-line);
+  border-radius:var(--radius);padding:24px 20px;text-align:center;box-shadow:var(--shadow);overflow:hidden;}
+.lottery-hero::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%, rgba(245,179,1,.18), transparent 60%);pointer-events:none;}
+.lottery-hero .prize-icon{width:44px;height:44px;color:var(--banana);margin-bottom:6px;filter:drop-shadow(0 6px 14px rgba(245,179,1,.35));}
+.lottery-hero .prize{font-family:'Lalezar',sans-serif;font-size:26px;color:var(--cream);position:relative;}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;position:relative;}
+.stat-box{background:rgba(0,0,0,.25);border-radius:14px;padding:12px;text-align:center;border:1px solid rgba(255,255,255,.04);}
+.stat-box b{display:block;font-size:17px;color:var(--banana);font-family:'Lalezar',sans-serif;}
+.stat-box span{font-size:11px;opacity:.7;}
+.winner-item{display:flex;align-items:center;gap:9px;padding:10px 4px;border-bottom:1px dashed var(--card-line);font-size:14px;font-weight:600;}
 .winner-item:last-child{border-bottom:none;}
+.winner-item .icon{color:var(--banana);width:18px;height:18px;}
 
 /* ---------- Bottom nav ---------- */
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;
-  background:var(--jungle-dark);border-top:1px solid var(--card-line);display:flex;padding:6px 3px calc(6px + env(safe-area-inset-bottom));
-  gap:2px;z-index:40;overflow-x:auto;}
-.nav-btn{flex:1;min-width:52px;background:none;border:none;color:rgba(241,239,233,.55);display:flex;flex-direction:column;align-items:center;
-  gap:2px;font-size:9.5px;font-family:'Vazirmatn',sans-serif;font-weight:600;padding:6px 0;border-radius:12px;cursor:pointer;white-space:nowrap;}
-.nav-btn .nb-ico{font-size:17px;}
-.nav-btn.active{color:var(--banana);background:rgba(245,179,1,.1);}
+.bottom-nav{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);width:calc(100% - 20px);max-width:460px;
+  background:linear-gradient(165deg,#161b24ee,#0b0d12ee);backdrop-filter:blur(14px);border:1px solid var(--card-line);
+  border-radius:26px;display:flex;padding:6px;gap:1px;z-index:40;box-shadow:0 16px 40px rgba(0,0,0,.55);}
+.nav-btn{flex:1;min-width:0;background:none;border:none;color:rgba(241,239,233,.5);display:flex;flex-direction:column;align-items:center;
+  gap:3px;font-size:8.5px;font-family:'Vazirmatn',sans-serif;font-weight:700;padding:7px 1px;border-radius:16px;cursor:pointer;
+  white-space:nowrap;transition:color .2s ease, background .2s ease;}
+.nav-btn .icon{width:17px;height:17px;transition:filter .2s ease;}
+.nav-btn.active{color:var(--banana);background:rgba(245,179,1,.12);}
+.nav-btn.active .icon{filter:drop-shadow(0 0 8px rgba(245,179,1,.6));}
 
 /* ---------- Drawer / Modal ---------- */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:80;display:none;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);z-index:80;display:none;}
 .overlay.active{display:block;}
-.drawer{position:fixed;top:0;right:0;bottom:0;width:78%;max-width:320px;background:var(--jungle-dark);
-  border-left:1px solid var(--card-line);z-index:90;transform:translateX(100%);transition:transform .25s ease;
-  padding:22px 18px;display:flex;flex-direction:column;gap:6px;}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:80%;max-width:320px;background:linear-gradient(180deg,#12161d,#07090c);
+  border-left:1px solid var(--card-line);z-index:90;transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.8,.3,1);
+  padding:24px 18px;display:flex;flex-direction:column;gap:6px;box-shadow:-20px 0 50px rgba(0,0,0,.5);}
 .drawer.active{transform:translateX(0);}
-.drawer h3{font-family:'Lalezar',sans-serif;color:var(--banana);font-size:20px;margin:0 0 14px;}
-.drawer-item{display:flex;align-items:center;gap:10px;padding:12px 8px;border-radius:12px;cursor:pointer;font-weight:600;}
-.drawer-item:hover{background:rgba(255,255,255,.05);}
-.drawer-user{display:flex;align-items:center;gap:10px;padding:10px 8px 18px;border-bottom:1px solid var(--card-line);margin-bottom:6px;}
-.drawer-avatar{width:44px;height:44px;border-radius:50%;background:var(--banana);display:flex;align-items:center;justify-content:center;
-  font-family:'Lalezar',sans-serif;font-size:18px;color:var(--choco);}
+.drawer-item{display:flex;align-items:center;gap:12px;padding:13px 10px;border-radius:14px;cursor:pointer;font-weight:700;font-size:14px;transition:background .15s ease;}
+.drawer-item:active{background:rgba(255,255,255,.06);}
+.drawer-item .icon{color:var(--banana);width:19px;height:19px;}
+.drawer-user{display:flex;align-items:center;gap:12px;padding:8px 6px 20px;border-bottom:1px solid var(--card-line);margin-bottom:8px;}
+.drawer-avatar{width:48px;height:48px;border-radius:50%;background:var(--grad-gold);display:flex;align-items:center;justify-content:center;
+  font-family:'Lalezar',sans-serif;font-size:19px;color:var(--choco);box-shadow:0 6px 16px rgba(245,179,1,.3);}
 
-.modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:88%;max-width:380px;background:var(--jungle-dark);
-  border:1px solid var(--card-line);border-radius:var(--radius);z-index:95;padding:20px;display:none;max-height:80vh;overflow-y:auto;}
-.modal.active{display:block;}
-.modal h3{font-family:'Lalezar',sans-serif;color:var(--banana);font-size:20px;margin:0 0 14px;text-align:center;}
-.level-row{display:flex;align-items:center;gap:12px;padding:10px 6px;border-radius:12px;}
-.level-row.current{background:rgba(255,201,60,.1);}
-.level-row .lv-e{font-size:26px;width:34px;text-align:center;}
+.modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-46%);width:88%;max-width:380px;background:linear-gradient(170deg,#151a23,#080a0e);
+  border:1px solid var(--card-line);border-radius:var(--radius);z-index:95;padding:22px;display:none;max-height:80vh;overflow-y:auto;
+  box-shadow:0 30px 70px rgba(0,0,0,.6);}
+.modal.active{display:block;animation:modalIn .25s cubic-bezier(.2,.8,.3,1);}
+@keyframes modalIn{from{opacity:0;transform:translate(-50%,-42%) scale(.96)}to{opacity:1;transform:translate(-50%,-46%) scale(1)}}
+.modal h3{font-family:'Lalezar',sans-serif;font-size:21px;margin:0 0 16px;text-align:center;
+  background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.level-row{display:flex;align-items:center;gap:12px;padding:11px 8px;border-radius:14px;}
+.level-row.current{background:rgba(245,179,1,.1);border:1px solid var(--card-line);}
+.level-row .lv-e{width:38px;height:38px;border-radius:50%;background:rgba(245,179,1,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.level-row .lv-e .icon{width:19px;height:19px;color:var(--banana);}
 .level-row .lv-t{flex:1;}
-.level-row .lv-need{font-size:12px;opacity:.7;}
+.level-row .lv-need{font-size:12px;opacity:.65;margin-top:2px;}
 
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--banana);
-  color:var(--cream);padding:10px 18px;border-radius:999px;font-size:13px;font-weight:700;z-index:120;opacity:0;
-  transition:opacity .25s ease, transform .25s ease;pointer-events:none;}
+.toast{position:fixed;bottom:112px;left:50%;transform:translateX(-50%);background:linear-gradient(160deg,#181d27,#0d1015);
+  border:1px solid var(--banana);color:var(--cream);padding:12px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:120;opacity:0;
+  transition:opacity .25s ease, transform .25s ease;pointer-events:none;display:flex;align-items:center;gap:8px;
+  box-shadow:0 10px 30px rgba(0,0,0,.5), 0 0 20px rgba(245,179,1,.15);white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+.toast .icon{color:var(--banana);width:16px;height:16px;flex-shrink:0;}
 
 /* ---------- Admin ---------- */
 .admin-tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;padding-bottom:2px;}
-.admin-tab{flex:none;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--card-line);
-  font-size:12px;font-weight:700;cursor:pointer;color:var(--cream);}
-.admin-tab.active{background:var(--banana);color:var(--choco);border-color:var(--banana);}
+.admin-tab{flex:none;padding:9px 16px;border-radius:999px;background:var(--card);border:1px solid var(--card-line);
+  font-size:12px;font-weight:800;cursor:pointer;color:var(--cream);}
+.admin-tab.active{background:var(--grad-gold);color:var(--choco);border-color:transparent;}
 .admin-pane{display:none;}
 .admin-pane.active{display:block;}
 .field{margin-bottom:10px;}
-.field label{display:block;font-size:12px;margin-bottom:5px;color:var(--banana);font-weight:700;}
-.field input, .field textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--card-line);
-  background:rgba(255,255,255,.05);color:var(--cream);font-family:'Vazirmatn',sans-serif;font-size:14px;}
-.list-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px;background:rgba(0,0,0,.15);
-  border-radius:12px;margin-bottom:8px;font-size:13px;}
-.small-btn{padding:6px 10px;font-size:11px;border-radius:8px;}
-.empty-state{text-align:center;padding:30px 10px;opacity:.6;font-size:13px;}
+.field label{display:block;font-size:12px;margin-bottom:6px;color:var(--banana);font-weight:800;}
+.field input, .field textarea{width:100%;padding:11px 13px;border-radius:12px;border:1px solid var(--card-line);
+  background:rgba(255,255,255,.04);color:var(--cream);font-family:'Vazirmatn',sans-serif;font-size:14px;}
+.list-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px;background:rgba(0,0,0,.2);
+  border-radius:14px;margin-bottom:8px;font-size:13px;}
+.small-btn{padding:7px 12px;font-size:11px;border-radius:10px;}
+.empty-state{text-align:center;padding:34px 10px;opacity:.55;font-size:13px;}
 
 /* ---------- City ---------- */
-.city-hero{background:linear-gradient(145deg, rgba(245,179,1,.10), transparent);border:1px solid var(--card-line);
-  border-radius:var(--radius);padding:0;overflow:hidden;text-align:center;}
-.city-img{width:100%;height:170px;background:linear-gradient(160deg,#1B212B,#0A0D12);display:flex;align-items:center;
-  justify-content:center;font-size:64px;border-bottom:1px solid var(--card-line);}
+.city-hero{background:linear-gradient(150deg, rgba(245,179,1,.12), transparent);border:1px solid var(--card-line);
+  border-radius:var(--radius);padding:0;overflow:hidden;text-align:center;box-shadow:var(--shadow);}
+.city-img{width:100%;height:180px;background:linear-gradient(160deg,#1B212B,#07090C);display:flex;align-items:center;
+  justify-content:center;border-bottom:1px solid var(--card-line);position:relative;}
+.city-img .icon{width:76px;height:76px;color:var(--banana);filter:drop-shadow(0 8px 20px rgba(245,179,1,.3));}
 .city-img img{width:100%;height:100%;object-fit:cover;}
-.city-body{padding:18px;}
-.city-name{font-family:'Lalezar',sans-serif;font-size:24px;color:var(--banana);}
-.city-lv{font-size:12px;opacity:.75;margin-top:2px;}
-.city-progress{height:8px;border-radius:5px;background:rgba(255,255,255,.08);margin:14px 0;overflow:hidden;}
-.city-progress i{display:block;height:100%;background:linear-gradient(90deg,var(--banana-deep),var(--banana));}
-.city-cost-row{display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.2);
-  border-radius:14px;padding:12px 14px;margin-top:6px;font-size:13px;}
-.tier-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px;}
-.tier-chip{background:rgba(0,0,0,.2);border-radius:10px;padding:8px 4px;text-align:center;font-size:10px;opacity:.55;}
-.tier-chip.on{opacity:1;border:1px solid var(--banana);color:var(--banana);font-weight:700;}
+.city-body{padding:20px;}
+.city-name{font-family:'Lalezar',sans-serif;font-size:24px;
+  background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.city-lv{font-size:12px;opacity:.7;margin-top:3px;font-weight:600;}
+.city-progress{height:9px;border-radius:6px;background:rgba(255,255,255,.08);margin:16px 0;overflow:hidden;}
+.city-progress i{display:block;height:100%;background:var(--grad-gold);box-shadow:0 0 10px rgba(245,179,1,.5);}
+.city-cost-row{display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.25);
+  border-radius:16px;padding:14px 16px;margin-top:6px;font-size:13px;}
+.tier-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px;}
+.tier-chip{background:rgba(0,0,0,.25);border-radius:12px;padding:10px 4px;text-align:center;font-size:10px;opacity:.5;border:1px solid transparent;}
+.tier-chip .icon{width:18px;height:18px;margin-bottom:4px;}
+.tier-chip.on{opacity:1;border-color:var(--banana);color:var(--banana);font-weight:800;background:rgba(245,179,1,.08);}
+.food-row{display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.25);border-radius:16px;padding:14px 16px;margin-top:10px;font-size:13px;}
+.food-row b{color:var(--banana);display:flex;align-items:center;gap:5px;}
 
 /* ---------- Stock market ---------- */
-.stock-item{background:var(--card);border:1px solid var(--card-line);border-radius:16px;padding:14px;margin-bottom:10px;cursor:pointer;}
+.news-ticker{overflow:hidden;background:linear-gradient(90deg,#171c26,#0c0e13);border:1px solid var(--card-line);
+  border-radius:14px;padding:10px 0;margin-bottom:14px;white-space:nowrap;position:relative;box-shadow:var(--shadow);}
+.news-ticker::before{content:'📢';position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:14px;z-index:2;
+  background:linear-gradient(90deg,#171c26 60%,transparent);padding-left:14px;}
+.news-ticker-track{display:inline-block;padding-right:40px;padding-left:100%;animation:tickerScroll 20s linear infinite;
+  font-size:12.5px;font-weight:700;color:var(--banana);}
+@keyframes tickerScroll{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+.stock-item{background:linear-gradient(165deg,#151a23,#0c0e13);border:1px solid var(--card-line);border-radius:18px;padding:16px;
+  margin-bottom:10px;cursor:pointer;box-shadow:var(--shadow);transition:transform .15s ease;}
+.stock-item:active{transform:scale(.98);}
 .stock-item .st-top{display:flex;align-items:center;justify-content:space-between;}
-.stock-item .st-name{font-weight:700;font-size:14px;}
-.stock-item .st-price{font-family:'Lalezar',sans-serif;font-size:18px;color:var(--cream);}
-.st-change{font-size:12px;font-weight:700;margin-top:2px;}
+.stock-item .st-name{font-weight:800;font-size:14.5px;display:flex;align-items:center;gap:7px;}
+.stock-item .st-name .icon{color:var(--banana);width:17px;height:17px;}
+.stock-item .st-price{font-family:'Lalezar',sans-serif;font-size:19px;color:var(--cream);margin-top:3px;}
+.st-change{font-size:12px;font-weight:800;margin-top:3px;display:flex;align-items:center;gap:4px;}
+.st-change .icon{width:13px;height:13px;}
 .st-change.up{color:var(--green);}
 .st-change.down{color:var(--red);}
-.spark{width:90px;height:34px;}
-.stock-detail-head{text-align:center;padding:6px 0 10px;}
-.stock-detail-head .sd-name{font-family:'Lalezar',sans-serif;font-size:22px;color:var(--banana);}
-.stock-detail-head .sd-price{font-size:32px;font-weight:800;margin:4px 0;}
-.chart-wrap{background:rgba(0,0,0,.2);border-radius:16px;padding:10px;margin-bottom:14px;}
+.spark{width:96px;height:36px;}
+.stock-detail-head{text-align:center;padding:8px 0 12px;}
+.stock-detail-head .sd-name{font-family:'Lalezar',sans-serif;font-size:22px;
+  background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.stock-detail-head .sd-price{font-size:34px;font-weight:900;margin:6px 0;}
+.chart-wrap{background:rgba(0,0,0,.25);border-radius:18px;padding:12px;margin-bottom:16px;border:1px solid rgba(255,255,255,.04);}
 .chart-wrap svg{width:100%;height:140px;display:block;}
-.trade-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
-.trade-box{background:rgba(0,0,0,.2);border-radius:14px;padding:12px;text-align:center;}
-.trade-box b{display:block;font-size:15px;color:var(--banana);margin-top:2px;}
-.qty-input{width:100%;padding:12px;border-radius:12px;border:1px solid var(--card-line);background:rgba(255,255,255,.05);
-  color:var(--cream);text-align:center;font-size:16px;margin-bottom:10px;}
+.trade-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.trade-box{background:rgba(0,0,0,.25);border-radius:16px;padding:14px;text-align:center;}
+.trade-box b{display:block;font-size:15px;color:var(--banana);margin-top:4px;}
+.qty-input{width:100%;padding:13px;border-radius:14px;border:1px solid var(--card-line);background:rgba(255,255,255,.04);
+  color:var(--cream);text-align:center;font-size:16px;margin-bottom:12px;font-weight:700;}
 .trade-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.btn-buy{background:var(--green);color:#06210f;}
-.btn-sell{background:var(--red);color:#2a0505;}
+.btn-buy{background:linear-gradient(135deg,#6ee89a,var(--green));color:#06210f;box-shadow:0 6px 16px rgba(62,207,110,.28);}
+.btn-sell{background:linear-gradient(135deg,#ff8a7c,var(--red));color:#2a0505;box-shadow:0 6px 16px rgba(255,92,92,.28);}
+.back-link{color:var(--banana);font-size:13px;font-weight:800;cursor:pointer;margin-bottom:10px;display:inline-flex;align-items:center;gap:5px;}
+
+/* ---------- Bank ---------- */
+.bank-card{position:relative;background:linear-gradient(135deg,#1c2230,#0a0c10 60%);border:1px solid var(--card-line);
+  border-radius:20px;padding:22px;box-shadow:var(--shadow);overflow:hidden;}
+.bank-card::before{content:'';position:absolute;top:-40%;left:-20%;width:140%;height:140%;
+  background:radial-gradient(circle at 30% 20%, rgba(245,179,1,.18), transparent 55%);pointer-events:none;}
+.bank-card-top{display:flex;align-items:center;justify-content:space-between;position:relative;}
+.bank-card-name{font-weight:800;font-size:15px;}
+.bank-card-number{font-family:'Lalezar',sans-serif;letter-spacing:2px;font-size:19px;margin:22px 0 18px;color:var(--banana-light);
+  direction:ltr;text-align:right;position:relative;}
+.bank-card-bottom{display:flex;align-items:flex-end;justify-content:space-between;position:relative;}
+.bank-card-bottom b{font-size:15px;color:var(--banana);}
 
 /* ---------- Profile ---------- */
-.profile-head{text-align:center;padding:6px 0 14px;}
-.profile-head .ph-brand{font-family:'Lalezar',sans-serif;font-size:20px;color:var(--banana);}
-.profile-head .ph-sub{font-size:12px;opacity:.7;margin-top:2px;}
-.profile-card{background:var(--card);border:1px solid var(--card-line);border-radius:var(--radius);padding:18px;}
-.profile-top{display:flex;align-items:center;gap:14px;}
-.profile-avatar{width:74px;height:74px;border-radius:50%;border:2px solid var(--banana);object-fit:cover;
-  display:flex;align-items:center;justify-content:center;font-family:'Lalezar',sans-serif;font-size:26px;
-  background:var(--jungle-mid);flex-shrink:0;}
-.profile-name{font-weight:800;font-size:17px;}
-.profile-id{font-size:11px;opacity:.6;margin-top:2px;}
-.profile-xp{margin-top:14px;}
-.profile-xp .px-row{display:flex;justify-content:space-between;font-size:11px;opacity:.75;margin-bottom:5px;}
-.profile-info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;}
-.pi-box{background:rgba(0,0,0,.2);border-radius:12px;padding:10px 6px;text-align:center;}
-.pi-box .pi-v{font-weight:700;font-size:13px;color:var(--banana);}
-.pi-box .pi-l{font-size:10px;opacity:.65;margin-top:3px;}
-.asset-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--card-line);font-size:13px;}
+.profile-head{text-align:center;padding:8px 0 16px;}
+.profile-head .ph-brand{font-family:'Lalezar',sans-serif;font-size:21px;display:flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.profile-head .ph-brand .icon{width:20px;height:20px;color:var(--banana);}
+.profile-head .ph-sub{font-size:12px;opacity:.65;margin-top:4px;}
+.profile-card{background:linear-gradient(165deg,#151a23,#0c0e13);border:1px solid var(--card-line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
+.profile-top{display:flex;align-items:center;gap:16px;}
+.profile-avatar{width:76px;height:76px;border-radius:50%;border:2px solid var(--banana);object-fit:cover;
+  display:flex;align-items:center;justify-content:center;font-family:'Lalezar',sans-serif;font-size:27px;
+  background:var(--jungle-mid);flex-shrink:0;box-shadow:0 0 0 4px rgba(245,179,1,.1), 0 8px 20px rgba(0,0,0,.4);}
+.profile-name{font-weight:900;font-size:17px;}
+.profile-id{font-size:11px;opacity:.55;margin-top:3px;}
+.profile-xp{margin-top:16px;}
+.profile-xp .px-row{display:flex;justify-content:space-between;font-size:11px;opacity:.75;margin-bottom:6px;font-weight:700;}
+.profile-info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px;}
+.pi-box{background:rgba(0,0,0,.25);border-radius:14px;padding:11px 6px;text-align:center;}
+.pi-box .pi-v{font-weight:800;font-size:13px;color:var(--banana);}
+.pi-box .pi-l{font-size:10px;opacity:.6;margin-top:4px;}
+.asset-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px dashed var(--card-line);font-size:13px;font-weight:600;}
 .asset-row:last-child{border-bottom:none;}
+.asset-row span{display:flex;align-items:center;gap:7px;}
+.asset-row .icon{color:var(--banana);width:16px;height:16px;}
 </style>
 </head>
 <body>
+
+<!-- ================= SVG ICON SPRITE ================= -->
+<svg style="display:none">
+  <symbol id="i-banana" viewBox="0 0 24 24"><path fill="currentColor" d="M4.2 17.8c-.2-2 .4-4.4 1.7-6.6C8 7.6 11.6 5 15.6 4c1.1-.3 2.1-.3 2.7 0 .3 1.2 0 2.9-.8 4.6-1.7 3.7-5.2 6.9-9.3 8.5-1.4.6-3 .9-4 .7Z"/><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M17.5 4.6c.9-.6 2-.9 3-.7"/></symbol>
+  <symbol id="i-monkey" viewBox="0 0 24 24"><circle cx="6.5" cy="7" r="2.6" fill="currentColor"/><circle cx="17.5" cy="7" r="2.6" fill="currentColor"/><circle cx="12" cy="13" r="7.2" fill="currentColor"/><ellipse cx="12" cy="14.8" rx="4.3" ry="3.4" fill="#07090C"/><circle cx="9.6" cy="12.4" r="1.05" fill="#07090C"/><circle cx="14.4" cy="12.4" r="1.05" fill="#07090C"/><path fill="none" stroke="#07090C" stroke-width="1.1" stroke-linecap="round" d="M9.8 16.6c.7.7 1.5 1 2.2 1s1.5-.3 2.2-1"/></symbol>
+  <symbol id="i-crown" viewBox="0 0 24 24"><path fill="currentColor" d="m4 17.5 1.6-9L10 12l2-5.5L14 12l4.4-3.5 1.6 9c-3.6 1.3-8.4 1.3-12 0Z"/><circle cx="12" cy="4.5" r="1.4" fill="currentColor"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10.2V19h5v-5h2v5h5v-8.8"/></symbol>
+  <symbol id="i-tasks" viewBox="0 0 24 24"><path d="M10 6.5h9.5M10 12h9.5M10 17.5h9.5"/><path d="m4 6.5 1.2 1.2L7.5 5.3"/><path d="m4 12 1.2 1.2 2.3-2.4"/><path d="m4 17.5 1.2 1.2 2.3-2.4"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="9.5" rx="1.6"/><path d="M4 10h16"/><path d="M12 10v9.5"/><path d="M12 10c-2 0-4-.7-4-2.6A2.3 2.3 0 0 1 10.4 5c1.9 0 2.9 2.2 1.6 5"/><path d="M12 10c2 0 4-.7 4-2.6A2.3 2.3 0 0 0 13.6 5c-1.9 0-2.9 2.2-1.6 5"/></symbol>
+  <symbol id="i-city" viewBox="0 0 24 24"><path d="M4 20.2V8.4l6-3.1v14.9"/><path d="M10 20.2V4l6 3.1v13.1"/><path d="M16 20.2v-10l4 2v8"/><path d="M4 20.2h16"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4.5 19.5V4.5"/><path d="M4.5 19.5h15"/><path d="m7 15 3.8-4.8 3 3L19 6.5"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c1-4.2 4.1-6.3 7-6.3s6 2.1 7 6.3"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3.5 6.5h17"/><path d="M3.5 12h17"/><path d="M3.5 17.5h17"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.1"/><path d="M12 3.5v2.3M12 18.2v2.3M4.6 12H2.3M21.7 12h-2.3M6.5 6.5l1.6 1.6M15.9 15.9l1.6 1.6M17.5 6.5l-1.6 1.6M8.1 15.9l-1.6 1.6"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M14 4.5h5.5V10"/><path d="M19.3 4.7 9.8 14.2"/><path d="M10 6H6a1.5 1.5 0 0 0-1.5 1.5v11A1.5 1.5 0 0 0 6 20h11a1.5 1.5 0 0 0 1.5-1.5V14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4.5 12.8 9 17.3l10.5-10.6"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="9" rx="2.2"/><path d="M8 10.5V7.7a4 4 0 0 1 8 0v2.8"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M3.4 12h17.2"/><path d="M12 3.4c2.6 2.5 2.6 14.7 0 17.2M12 3.4c-2.6 2.5-2.6 14.7 0 17.2"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9.5 4.5H6a1.5 1.5 0 0 0-1.5 1.5v12A1.5 1.5 0 0 0 6 19.5h3.5"/><path d="m14 8 4 4-4 4"/><path d="M18 12H9.5"/></symbol>
+  <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="M14.8 6 9 12l5.8 6"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V6"/><path d="m6 11.5 6-6 6 6"/></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v13"/><path d="m6 12.5 6 6 6-6"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 4h10v4.2a5 5 0 0 1-10 0V4Z"/><path d="M7 5.3H4.3v1.9a3 3 0 0 0 3 3"/><path d="M17 5.3h2.7v1.9a3 3 0 0 1-3 3"/><path d="M12 13.2V16"/><path d="M9 20h6"/><path d="M10 16.5h4v3.5h-4z"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5c.5 3.5 2 5 5.5 5.5-3.5.5-5 2-5.5 5.5-.5-3.5-2-5-5.5-5.5 3.5-.5 5-2 5.5-5.5Z"/><path fill="currentColor" opacity=".6" d="M18.5 14.5c.3 1.7 1 2.4 2.7 2.7-1.7.3-2.4 1-2.7 2.7-.3-1.7-1-2.4-2.7-2.7 1.7-.3 2.4-1 2.7-2.7Z"/></symbol>
+  <symbol id="i-bank" viewBox="0 0 24 24"><path d="M3.5 9.5 12 4l8.5 5.5"/><path d="M4.5 9.5h15V19h-15z"/><path d="M4.5 19h15"/><path d="M7.5 12.5V17M12 12.5V17M16.5 12.5V17"/></symbol>
+  <symbol id="i-dumbbell" viewBox="0 0 24 24"><path d="M4 10v4"/><path d="M2.5 9v6"/><path d="M20 10v4"/><path d="M21.5 9v6"/><path d="M6.5 12h11"/><rect x="4.5" y="9.5" width="3" height="5" rx="1"/><rect x="16.5" y="9.5" width="3" height="5" rx="1"/></symbol>
+  <symbol id="i-bath" viewBox="0 0 24 24"><path d="M4 12h16"/><path d="M5 12v3a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4v-3"/><path d="M7 12V6.5A2.5 2.5 0 0 1 9.5 4c1 0 1.8.55 2.2 1.3"/><path d="M6 19.5v1.3M18 19.5v1.3"/></symbol>
+</svg>
+
 <div class="app" id="app">
 
   <!-- ================= TOP BAR ================= -->
   <div class="topbar">
-    <div class="profile-btn" onclick="openDrawer()">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    <div class="icon-btn" onclick="openDrawer()"><svg class="icon"><use href="#i-menu"/></svg></div>
+    <div class="brand"><svg class="icon icon-fill"><use href="#i-banana"/></svg>موز<span>ستان</span></div>
+    <div class="topbar-spacer" id="adminEntry" style="display:none;cursor:pointer" onclick="showScreen('admin')">
+      <div class="icon-btn"><svg class="icon"><use href="#i-gear"/></svg></div>
     </div>
-    <div class="brand">موز<span>ستان</span></div>
-    <div class="topbar-spacer" id="adminEntry" style="display:none;cursor:pointer" onclick="showScreen('admin')">⚙️</div>
   </div>
 
   <!-- ================= HOME ================= -->
   <div class="screen active" id="screen-home">
     <div class="balance-wrap">
-      <div class="balance-label">موجودی موز</div>
-      <div class="balance-num"><span class="ico">🍌</span><span id="balanceVal">0</span></div>
+      <div class="balance-label" data-i18n="balanceLabel">موجودی موز</div>
+      <div class="balance-num"><svg class="icon icon-fill"><use href="#i-banana"/></svg><span id="balanceVal">0</span></div>
     </div>
 
     <div class="monkey-zone">
+      <div class="monkey-glow"></div>
       <div class="monkey-circle" id="monkeyCircle">
-        <div class="mk-emoji" id="mkEmoji">🙈</div>
+        <svg class="icon icon-fill mk-icon" id="mkIcon"><use href="#i-monkey"/></svg>
         <div class="mk-text" id="mkText">تو هنوز میمون نوب و بی‌خاصیتی‌ای</div>
-        <div class="mk-lock" id="mkLock">توی سطح ۲ می‌تونی میمون بگیری</div>
+        <div class="mk-lock" id="mkLock"><svg class="icon"><use href="#i-lock"/></svg><span id="mkLockText">توی سطح ۲ می‌تونی میمون بگیری</span></div>
+      </div>
+    </div>
+
+    <div class="monkey-care" id="monkeyCare" style="display:none">
+      <div class="care-box" id="careBoxBath" onclick="openCareModal('bath')">
+        <svg class="icon"><use href="#i-bath"/></svg>
+        <div class="cb-label" data-i18n="bath">حمام</div>
+        <div class="cb-status" id="careStatusBath">-</div>
+      </div>
+      <div class="care-box" id="careBoxFeed" onclick="feedMonkey()">
+        <svg class="icon icon-fill"><use href="#i-banana"/></svg>
+        <div class="cb-label" data-i18n="feed">غذا دادن</div>
+        <div class="cb-status" id="careStatusFeed">-</div>
+      </div>
+      <div class="care-box" id="careBoxGym" onclick="openCareModal('gym')">
+        <svg class="icon"><use href="#i-dumbbell"/></svg>
+        <div class="cb-label" data-i18n="gym">باشگاه</div>
+        <div class="cb-status" id="careStatusGym">-</div>
       </div>
     </div>
 
     <div class="level-pill" onclick="openLevels()">
-      <div class="lv-emoji" id="lvEmoji">🐒</div>
+      <div class="lv-badge"><svg class="icon icon-fill" id="lvBadgeIcon"><use href="#i-monkey"/></svg></div>
       <div class="lv-text">
         <div class="lv-name" id="lvName">بچه میمون</div>
         <div class="lv-progress"><i id="lvBar" style="width:0%"></i></div>
       </div>
-      <div class="chev">›</div>
+      <svg class="icon chev"><use href="#i-chev-l"/></svg>
     </div>
   </div>
 
   <!-- ================= TASKS ================= -->
   <div class="screen" id="screen-tasks">
-    <div class="section-title">ماموریت‌ها</div>
+    <div class="section-title"><svg class="icon"><use href="#i-tasks"/></svg><span data-i18n="tasksTitle">ماموریت‌ها</span></div>
     <div id="tasksList"></div>
-  </div>
-
-  <!-- ================= CASINO ================= -->
-  <div class="screen" id="screen-casino">
-    <div class="section-title">کازینو</div>
-    <div id="casinoHome">
-      <div class="game-grid">
-        <div class="game-tile" onclick="openGame('wheel')">
-          <span class="g-emoji">🎡</span>
-          <div class="g-name">گردونه شانس</div>
-        </div>
-        <div class="game-tile" onclick="openGame('code')">
-          <span class="g-emoji">🔑</span>
-          <div class="g-name">کد جایزه</div>
-        </div>
-      </div>
-    </div>
-
-    <div id="wheelGame" style="display:none">
-      <span class="back-link" onclick="closeGame()">‹ بازگشت</span>
-      <div class="wheel-wrap">
-        <div class="wheel-pointer">🔻</div>
-        <canvas id="wheelCanvas" width="260" height="260"></canvas>
-      </div>
-      <div style="text-align:center">
-        <button class="btn btn-main" id="spinBtn" onclick="spinWheel()">چرخوندن گردونه</button>
-        <div class="muted" id="spinNote" style="margin-top:8px"></div>
-      </div>
-    </div>
-
-    <div id="codeGame" style="display:none">
-      <span class="back-link" onclick="closeGame()">‹ بازگشت</span>
-      <div class="card" style="text-align:center">
-        <div style="font-size:40px;margin-bottom:6px">🔑</div>
-        <div class="muted" style="margin-bottom:14px">کد جایزه رو وارد کن و موز بگیر</div>
-        <input class="code-input" id="codeInput" placeholder="کد را وارد کنید">
-        <button class="btn btn-main" style="width:100%" onclick="redeemCode()">دریافت جایزه</button>
-      </div>
-    </div>
   </div>
 
   <!-- ================= LOTTERY ================= -->
   <div class="screen" id="screen-lottery">
-    <div class="section-title">قرعه‌کشی</div>
+    <div class="section-title"><svg class="icon"><use href="#i-gift"/></svg><span data-i18n="lotteryTitle">قرعه‌کشی</span></div>
     <div class="lottery-hero">
-      <div class="muted">جایزه قرعه‌کشی</div>
+      <svg class="icon icon-fill prize-icon"><use href="#i-gift"/></svg>
+      <div class="muted" data-i18n="lotPrizeLabel">جایزه قرعه‌کشی</div>
       <div class="prize" id="lotPrize">-</div>
       <div class="stat-grid">
-        <div class="stat-box"><b id="lotTime">-</b><span>زمان قرعه‌کشی</span></div>
-        <div class="stat-box"><b id="lotWinnersCount">-</b><span>تعداد برندگان</span></div>
-        <div class="stat-box"><b id="lotParticipants">0</b><span>شرکت‌کنندگان</span></div>
-        <div class="stat-box"><b id="lotStatus">باز</b><span>وضعیت</span></div>
+        <div class="stat-box"><b id="lotTime">-</b><span data-i18n="lotTimeLabel">زمان قرعه‌کشی</span></div>
+        <div class="stat-box"><b id="lotWinnersCount">-</b><span data-i18n="lotWinnersLabel">تعداد برندگان</span></div>
+        <div class="stat-box"><b id="lotParticipants">0</b><span data-i18n="lotParticipantsLabel">شرکت‌کنندگان</span></div>
+        <div class="stat-box"><b id="lotStatus">باز</b><span data-i18n="lotStatusLabel">وضعیت</span></div>
       </div>
-      <button class="btn btn-main" style="width:100%;margin-top:16px" id="joinLotBtn" onclick="joinLottery()">شرکت در قرعه‌کشی</button>
+      <button class="btn btn-main" style="width:100%;margin-top:18px" id="joinLotBtn" onclick="joinLottery()">شرکت در قرعه‌کشی</button>
     </div>
 
     <div class="card" style="margin-top:16px">
-      <div class="row"><b>برندگان</b></div>
-      <div id="winnersList"><div class="empty-state">هنوز قرعه‌کشی برگزار نشده</div></div>
+      <div class="row"><b><svg class="icon"><use href="#i-trophy"/></svg><span data-i18n="winnersTitle">برندگان</span></b></div>
+      <div id="winnersList"></div>
     </div>
   </div>
 
   <!-- ================= CITY ================= -->
   <div class="screen" id="screen-city">
-    <div class="section-title">شهر من</div>
+    <div class="section-title"><svg class="icon"><use href="#i-city"/></svg><span data-i18n="cityTitle">شهر من</span></div>
     <div class="city-hero">
-      <div class="city-img" id="cityImg">🏘️</div>
+      <div class="city-img" id="cityImg"><svg class="icon"><use href="#i-city"/></svg></div>
       <div class="city-body">
         <div class="city-name" id="cityName">دهکده میمونی</div>
         <div class="city-lv" id="cityLv">سطح ۰ از ۲۰</div>
@@ -356,9 +444,19 @@ body{
         <div class="city-cost-row">
           <div>
             <div class="muted" id="cityNextLabel">هزینه ارتقا به سطح ۱</div>
-            <b style="color:var(--banana)" id="cityCost">🍌 ۲۰۰</b>
+            <b style="color:var(--banana);display:flex;align-items:center;gap:5px;margin-top:3px" id="cityCost"><svg class="icon icon-fill"><use href="#i-banana"/></svg>۲۰۰</b>
           </div>
           <button class="btn btn-main" id="cityUpBtn" onclick="upgradeCity()">ارتقا</button>
+        </div>
+        <div class="food-row">
+          <div>
+            <div class="muted" data-i18n="foodStockLabel">موجودی غذا</div>
+            <b style="display:flex;align-items:center;gap:5px;margin-top:3px" id="cityFoodStock"><svg class="icon icon-fill"><use href="#i-banana"/></svg>0</b>
+          </div>
+          <div style="text-align:left">
+            <div class="muted" data-i18n="nextFoodLabel">تولید غذای بعدی</div>
+            <b style="color:var(--cream);font-size:12.5px;margin-top:3px;display:block" id="cityFoodTimer">-</b>
+          </div>
         </div>
         <div class="tier-grid" id="tierGrid"></div>
       </div>
@@ -367,11 +465,12 @@ body{
 
   <!-- ================= STOCK MARKET ================= -->
   <div class="screen" id="screen-stock">
-    <div class="section-title">بورس موزستان</div>
+    <div class="section-title"><svg class="icon"><use href="#i-chart"/></svg><span data-i18n="stockTitle">بورس موزستان</span></div>
+    <div class="news-ticker"><div class="news-ticker-track" id="newsTickerTrack">-</div></div>
     <div id="stockListWrap"></div>
 
     <div id="stockDetail" style="display:none">
-      <span class="back-link" onclick="closeStockDetail()">‹ بازگشت به بازار</span>
+      <span class="back-link" onclick="closeStockDetail()"><svg class="icon"><use href="#i-chev-l"/></svg><span data-i18n="backToMarket">بازگشت به بازار</span></span>
       <div class="stock-detail-head">
         <div class="sd-name" id="sdName">-</div>
         <div class="sd-price" id="sdPrice">-</div>
@@ -379,22 +478,53 @@ body{
       </div>
       <div class="chart-wrap"><svg id="sdChart" viewBox="0 0 300 140" preserveAspectRatio="none"></svg></div>
       <div class="trade-grid">
-        <div class="trade-box"><span class="muted">موجودی شما</span><b id="sdOwned">0</b></div>
-        <div class="trade-box"><span class="muted">ارزش دارایی</span><b id="sdValue">🍌 0</b></div>
+        <div class="trade-box"><span class="muted" data-i18n="yourHolding">موجودی شما</span><b id="sdOwned">0</b></div>
+        <div class="trade-box"><span class="muted" data-i18n="holdingValue">ارزش دارایی</span><b id="sdValue">0</b></div>
       </div>
       <input class="qty-input" id="sdQty" type="number" placeholder="تعداد سهم" min="1" value="1">
       <div class="trade-actions">
-        <button class="btn btn-buy" onclick="tradeStock('buy')">خرید</button>
-        <button class="btn btn-sell" onclick="tradeStock('sell')">فروش</button>
+        <button class="btn btn-buy" onclick="tradeStock('buy')" data-i18n="buy">خرید</button>
+        <button class="btn btn-sell" onclick="tradeStock('sell')" data-i18n="sell">فروش</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ================= BANK ================= -->
+  <div class="screen" id="screen-bank">
+    <div class="section-title"><svg class="icon"><use href="#i-bank"/></svg><span data-i18n="bankTitle">بانک موزستان</span></div>
+    <div class="bank-card">
+      <div class="bank-card-top">
+        <span class="bank-card-name" id="bankCardName">-</span>
+        <svg class="icon icon-fill" style="color:var(--banana);width:24px;height:24px"><use href="#i-banana"/></svg>
+      </div>
+      <div class="bank-card-number" id="bankCardNumber">-</div>
+      <div class="bank-card-bottom">
+        <div>
+          <div class="muted" data-i18n="bankBalanceLabel">موجودی بانک</div>
+          <b id="bankBalanceVal">0</b>
+        </div>
+        <div style="text-align:left">
+          <div class="muted" data-i18n="walletLabel">آدرس ولت</div>
+          <b id="bankWalletVal" style="font-size:11px;direction:ltr">-</b>
+        </div>
+      </div>
+    </div>
+    <div class="trade-actions" style="margin-top:14px">
+      <button class="btn btn-buy" onclick="openBankOp('deposit')" data-i18n="deposit">واریز</button>
+      <button class="btn btn-sell" onclick="openBankOp('withdraw')" data-i18n="withdraw">برداشت</button>
+    </div>
+    <button class="btn btn-main" style="width:100%;margin-top:12px" onclick="openTransferModal()" data-i18n="transferToPlayer">انتقال موز به بازیکن</button>
+
+    <div class="card" style="margin-top:16px">
+      <div class="row"><b><svg class="icon icon-fill"><use href="#i-banana"/></svg><span data-i18n="mainBalanceLabel">موجودی اصلی</span></b><span id="bankMainBalance" style="font-weight:800;color:var(--banana)">0</span></div>
     </div>
   </div>
 
   <!-- ================= PROFILE ================= -->
   <div class="screen" id="screen-profile">
     <div class="profile-head">
-      <div class="ph-brand">🍌 BANANA EMPIRE 🍌</div>
-      <div class="ph-sub">پروفایل کاربر</div>
+      <div class="ph-brand"><svg class="icon icon-fill"><use href="#i-banana"/></svg>BANANA EMPIRE<svg class="icon icon-fill"><use href="#i-banana"/></svg></div>
+      <div class="ph-sub" data-i18n="profileSub">پروفایل کاربر</div>
     </div>
     <div class="profile-card">
       <div class="profile-top">
@@ -409,67 +539,70 @@ body{
         <div class="city-progress"><i id="pXpBar" style="width:0%"></i></div>
       </div>
       <div class="profile-info-grid">
-        <div class="pi-box"><div class="pi-v" id="pJoinDate">-</div><div class="pi-l">عضویت از</div></div>
-        <div class="pi-box"><div class="pi-v">همین حالا</div><div class="pi-l">آخرین ورود</div></div>
-        <div class="pi-box"><div class="pi-v" id="pTrades">0</div><div class="pi-l">معاملات</div></div>
+        <div class="pi-box"><div class="pi-v" id="pJoinDate">-</div><div class="pi-l" data-i18n="joinedSince">عضویت از</div></div>
+        <div class="pi-box"><div class="pi-v" data-i18n="justNow">همین حالا</div><div class="pi-l" data-i18n="lastLogin">آخرین ورود</div></div>
+        <div class="pi-box"><div class="pi-v" id="pTrades">0</div><div class="pi-l" data-i18n="tradesLabel">معاملات</div></div>
       </div>
     </div>
 
     <div class="card" style="margin-top:14px">
-      <div class="row"><b>🎒 دارایی‌ها</b></div>
-      <div class="asset-row"><span>🍌 موز</span><b id="paBananas">0</b></div>
-      <div class="asset-row"><span>📈 ارزش سهام</span><b id="paStocks">0</b></div>
-      <div class="asset-row"><span>🏙️ سطح شهر</span><b id="paCity">0</b></div>
+      <div class="row"><b><svg class="icon"><use href="#i-chart"/></svg><span data-i18n="assetsTitle">دارایی‌ها</span></b></div>
+      <div class="asset-row"><span><svg class="icon icon-fill"><use href="#i-banana"/></svg><span data-i18n="bananaAsset">موز</span></span><b id="paBananas">0</b></div>
+      <div class="asset-row"><span><svg class="icon"><use href="#i-chart"/></svg><span data-i18n="stockAsset">ارزش سهام</span></span><b id="paStocks">0</b></div>
+      <div class="asset-row"><span><svg class="icon"><use href="#i-city"/></svg><span data-i18n="cityAsset">سطح شهر</span></span><b id="paCity">0</b></div>
     </div>
 
     <div class="card" style="margin-top:14px">
-      <div class="row"><b>📊 سهام من</b></div>
-      <div id="pHoldings"><div class="empty-state">هنوز سهامی نخریدی</div></div>
-      <button class="btn btn-ghost" style="width:100%;margin-top:10px" onclick="showScreen('stock')">مشاهده بازار</button>
+      <div class="row"><b><svg class="icon"><use href="#i-chart"/></svg><span data-i18n="myHoldingsTitle">سهام من</span></b></div>
+      <div id="pHoldings"></div>
+      <button class="btn btn-ghost" style="width:100%;margin-top:10px" onclick="showScreen('stock')" data-i18n="viewMarket">مشاهده بازار</button>
     </div>
   </div>
 
   <!-- ================= ADMIN ================= -->
   <div class="screen" id="screen-admin">
-    <div class="section-title">پنل مدیریت</div>
+    <div class="section-title"><svg class="icon"><use href="#i-gear"/></svg><span data-i18n="adminTitle">پنل مدیریت</span></div>
     <div class="admin-tabs">
-      <div class="admin-tab active" data-t="tasks" onclick="switchAdminTab('tasks')">ماموریت‌ها</div>
-      <div class="admin-tab" data-t="codes" onclick="switchAdminTab('codes')">کد جایزه</div>
-      <div class="admin-tab" data-t="lottery" onclick="switchAdminTab('lottery')">قرعه‌کشی</div>
-      <div class="admin-tab" data-t="users" onclick="switchAdminTab('users')">کاربران</div>
+      <div class="admin-tab active" data-t="tasks" onclick="switchAdminTab('tasks')" data-i18n="adminTabTasks">ماموریت‌ها</div>
+      <div class="admin-tab" data-t="lottery" onclick="switchAdminTab('lottery')" data-i18n="adminTabLottery">قرعه‌کشی</div>
+      <div class="admin-tab" data-t="stock" onclick="switchAdminTab('stock')" data-i18n="adminTabStock">بورس</div>
+      <div class="admin-tab" data-t="users" onclick="switchAdminTab('users')" data-i18n="adminTabUsers">کاربران</div>
     </div>
 
     <div class="admin-pane active" id="admin-tasks">
       <div class="card">
-        <div class="field"><label>عنوان ماموریت</label><input id="atTitle" placeholder="مثلا: عضویت در کانال"></div>
-        <div class="field"><label>لینک</label><input id="atLink" placeholder="https://t.me/..."></div>
-        <div class="field"><label>جایزه (موز)</label><input id="atReward" type="number" placeholder="5000"></div>
-        <button class="btn btn-main" style="width:100%" onclick="adminAddTask()">افزودن ماموریت</button>
+        <div class="field"><label data-i18n="taskTitleLabel">عنوان ماموریت</label><input id="atTitle" placeholder="مثلا: عضویت در کانال"></div>
+        <div class="field"><label data-i18n="taskLinkLabel">لینک</label><input id="atLink" placeholder="https://t.me/..."></div>
+        <div class="field"><label data-i18n="taskRewardLabel">جایزه (موز)</label><input id="atReward" type="number" placeholder="5000"></div>
+        <button class="btn btn-main" style="width:100%" onclick="adminAddTask()" data-i18n="addTask">افزودن ماموریت</button>
       </div>
       <div id="adminTasksList"></div>
     </div>
 
-    <div class="admin-pane" id="admin-codes">
-      <div class="card">
-        <div class="field"><label>کد فعال</label><input id="acCode" placeholder="BANANA500"></div>
-        <div class="field"><label>جایزه (موز)</label><input id="acReward" type="number" placeholder="500"></div>
-        <button class="btn btn-main" style="width:100%" onclick="adminSetCode()">ثبت کد</button>
-      </div>
-      <div class="card" id="adminCurrentCode"></div>
-    </div>
-
     <div class="admin-pane" id="admin-lottery">
       <div class="card">
-        <div class="field"><label>عنوان جایزه</label><input id="alPrize" placeholder="مثلا: آیفون ۱۵"></div>
-        <div class="field"><label>زمان قرعه‌کشی</label><input id="alTime" type="datetime-local"></div>
-        <div class="field"><label>تعداد برندگان</label><input id="alWinners" type="number" placeholder="3"></div>
-        <button class="btn btn-main" style="width:100%" onclick="adminSetLottery()">ذخیره تنظیمات</button>
+        <div class="field"><label data-i18n="prizeTitleLabel">عنوان جایزه</label><input id="alPrize" placeholder="مثلا: آیفون ۱۵"></div>
+        <div class="field"><label data-i18n="lotTimeInputLabel">زمان قرعه‌کشی</label><input id="alTime" type="datetime-local"></div>
+        <div class="field"><label data-i18n="winnersCountLabel">تعداد برندگان</label><input id="alWinners" type="number" placeholder="3"></div>
+        <button class="btn btn-main" style="width:100%" onclick="adminSetLottery()" data-i18n="saveSettings">ذخیره تنظیمات</button>
       </div>
       <div class="card">
         <div class="row"><b id="alParticipantsCount">0 شرکت‌کننده</b>
-          <button class="btn btn-danger small-btn" onclick="adminDrawLottery()">برگزاری قرعه‌کشی</button>
+          <button class="btn btn-danger small-btn" onclick="adminDrawLottery()" data-i18n="drawLottery">برگزاری قرعه‌کشی</button>
         </div>
         <div id="adminLotWinners" class="muted" style="margin-top:8px"></div>
+      </div>
+    </div>
+
+    <div class="admin-pane" id="admin-stock">
+      <div class="card">
+        <div class="field"><label data-i18n="adminNewsLabel">متن خبر بورس</label><input id="anNews" placeholder="مثلا: قیمت سهام موز امروز افزایش یافت"></div>
+        <button class="btn btn-main" style="width:100%" onclick="adminAddNews()" data-i18n="addNews">افزودن خبر</button>
+      </div>
+      <div class="card" id="adminNewsListWrap"></div>
+      <div class="card">
+        <div class="field"><label data-i18n="adminSetPriceLabel">تعیین قیمت سهام موز</label><input id="asPrice" type="number" placeholder="120"></div>
+        <button class="btn btn-main" style="width:100%" onclick="adminSetStockPrice()" data-i18n="setPrice">ثبت قیمت</button>
       </div>
     </div>
 
@@ -482,13 +615,13 @@ body{
 
 <!-- ================= BOTTOM NAV ================= -->
 <div class="bottom-nav">
-  <button class="nav-btn active" data-s="home" onclick="showScreen('home')"><span class="nb-ico">🏠</span>خانه</button>
-  <button class="nav-btn" data-s="tasks" onclick="showScreen('tasks')"><span class="nb-ico">📋</span>ماموریت‌ها</button>
-  <button class="nav-btn" data-s="casino" onclick="showScreen('casino')"><span class="nb-ico">🎰</span>کازینو</button>
-  <button class="nav-btn" data-s="lottery" onclick="showScreen('lottery')"><span class="nb-ico">🎁</span>قرعه‌کشی</button>
-  <button class="nav-btn" data-s="city" onclick="showScreen('city')"><span class="nb-ico">🏙️</span>شهر من</button>
-  <button class="nav-btn" data-s="stock" onclick="showScreen('stock')"><span class="nb-ico">📈</span>بورس</button>
-  <button class="nav-btn" data-s="profile" onclick="showScreen('profile')"><span class="nb-ico">👤</span>پروفایل</button>
+  <button class="nav-btn active" data-s="home" onclick="showScreen('home')"><svg class="icon"><use href="#i-home"/></svg><span data-i18n="navHome">خانه</span></button>
+  <button class="nav-btn" data-s="tasks" onclick="showScreen('tasks')"><svg class="icon"><use href="#i-tasks"/></svg><span data-i18n="navTasks">ماموریت</span></button>
+  <button class="nav-btn" data-s="lottery" onclick="showScreen('lottery')"><svg class="icon"><use href="#i-gift"/></svg><span data-i18n="navLottery">قرعه‌کشی</span></button>
+  <button class="nav-btn" data-s="city" onclick="showScreen('city')"><svg class="icon"><use href="#i-city"/></svg><span data-i18n="navCity">شهر</span></button>
+  <button class="nav-btn" data-s="stock" onclick="showScreen('stock')"><svg class="icon"><use href="#i-chart"/></svg><span data-i18n="navStock">بورس</span></button>
+  <button class="nav-btn" data-s="bank" onclick="showScreen('bank')"><svg class="icon"><use href="#i-bank"/></svg><span data-i18n="navBank">بانک</span></button>
+  <button class="nav-btn" data-s="profile" onclick="showScreen('profile')"><svg class="icon"><use href="#i-user"/></svg><span data-i18n="navProfile">پروفایل</span></button>
 </div>
 
 <!-- ================= DRAWER ================= -->
@@ -497,35 +630,48 @@ body{
   <div class="drawer-user">
     <div class="drawer-avatar" id="drawerInitial">؟</div>
     <div>
-      <div style="font-weight:700" id="drawerName">کاربر مهمان</div>
+      <div style="font-weight:800" id="drawerName">کاربر مهمان</div>
       <div class="muted" id="drawerLevel">بچه میمون</div>
     </div>
   </div>
-  <div class="drawer-item" onclick="toggleLanguage()">🌐 زبان: <span id="langLabel" style="margin-right:4px">فارسی</span></div>
-  <div class="drawer-item" onclick="showProfileName()">👤 نام کاربری</div>
-  <div class="drawer-item" onclick="logoutUser()" style="color:#ff8a7a">🚪 خروج</div>
+  <div class="drawer-item" onclick="toggleLanguage()"><svg class="icon"><use href="#i-globe"/></svg><span data-i18n="langRow">زبان</span>: <span id="langLabel" style="margin-right:4px">فارسی</span></div>
+  <div class="drawer-item" onclick="showProfileName()"><svg class="icon"><use href="#i-user"/></svg><span data-i18n="usernameRow">نام کاربری</span></div>
+  <div class="drawer-item" onclick="logoutUser()" style="color:#ff8a7a"><svg class="icon" style="color:#ff8a7a"><use href="#i-logout"/></svg><span data-i18n="logoutRow">خروج</span></div>
 </div>
 
 <!-- ================= LEVEL MODAL ================= -->
 <div class="overlay" id="overlayModal" onclick="closeAllOverlays()"></div>
 <div class="modal" id="levelModal">
-  <h3>سطوح میمونی</h3>
+  <h3 data-i18n="levelsModalTitle">سطوح میمونی</h3>
   <div id="levelListWrap"></div>
+</div>
+
+<!-- ================= CARE MODAL ================= -->
+<div class="modal" id="careModal">
+  <h3 id="careModalTitle">-</h3>
+  <div id="careModalBody"></div>
+</div>
+
+<!-- ================= BANK MODAL ================= -->
+<div class="modal" id="bankModal">
+  <h3 id="bankModalTitle">-</h3>
+  <div id="bankModalBody"></div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
 /* =========================================================
-   موزستان (Banana Land) — Telegram Mini App
+   موزستان (Banana Empire) — Telegram Mini App
    ---------------------------------------------------------
    ⚠️ NOTE ON DATA STORAGE:
    This build stores everything in the browser's localStorage
    so it works fully offline as a demo / single-device app.
    Features that must be shared across ALL players in real
    life — the lottery pool, the admin's user list, bans,
-   tasks/codes created by the admin — need a real backend
-   (server + database) to sync across every player's phone.
+   tasks created by the admin, bank transfers between wallets,
+   stock news/prices — need a real backend (server + database)
+   to sync across every player's phone.
    All data access goes through the DB.* helpers below, so
    swapping localStorage for real API calls later only means
    editing this one section.
@@ -536,31 +682,23 @@ const ADMIN_USERNAMES = ['TORK_01576']; // بدون @ — نام کاربری ت
 const ADMIN_PASSWORD  = 'admin123'; // برای تست خارج از تلگرام: آدرس را با #admin باز کن
 
 const LEVELS = [
-  { key:'baby',    name:'بچه میمون',    emoji:'🐒', need:0 },
-  { key:'thug',    name:'نوچه میمون',   emoji:'🙈', need:30000 },
-  { key:'monkey',  name:'میمون',        emoji:'🐵', need:80000 },   // 30,000 + 50,000
-  { key:'minister',name:'میمون وزیر',   emoji:'🦧', need:180000 },  // + 100,000
-  { key:'king',    name:'شاه میمون',    emoji:'👑', need:1680000 }, // + 1,500,000
+  { key:'baby',    name:'بچه میمون',    nameEn:'Baby Monkey',   icon:'monkey', need:0 },
+  { key:'thug',    name:'نوچه میمون',   nameEn:'Rookie Monkey', icon:'monkey', need:30000 },
+  { key:'monkey',  name:'میمون',        nameEn:'Monkey',        icon:'monkey', need:80000 },   // 30,000 + 50,000
+  { key:'minister',name:'میمون وزیر',   nameEn:'Minister Monkey',icon:'monkey', need:180000 },  // + 100,000
+  { key:'king',    name:'شاه میمون',    nameEn:'Monkey King',   icon:'crown',  need:1680000 }, // + 1,500,000
 ];
-
-const WHEEL_PRIZES = [
-  { label:'500',    value:500,    weight:26, color:'#1F6E4B' },
-  { label:'پوچ',    value:0,      weight:24, color:'#123524' },
-  { label:'2,000',  value:2000,   weight:16, color:'#1F6E4B' },
-  { label:'پوچ',    value:0,      weight:20, color:'#123524' },
-  { label:'30,000', value:30000,  weight:6,  color:'#F2A900' },
-  { label:'10,000', value:10000,  weight:6,  color:'#1F6E4B' },
-  { label:'100,000',value:100000, weight:2,  color:'#E8523E' },
-];
+function levelName(lv){ return LANG==='fa' ? lv.name : lv.nameEn; }
 
 // ---------- City config ----------
 // تصاویر هر لایه (tier) رو اینجا جایگزین کن — می‌تونی src رو به آدرس عکس خودت تغییر بدی
 const CITY_TIERS = [
-  { name:'دهکده میمونی', emoji:'🏘️', from:0,  to:5, img:"صفر تا پنج.png"},
-  { name:'شهرک میمونی',  emoji:'🏙️', from:5,  to:10, img:"پنج تا ده.png"},
-  { name:'شهر میمونی',   emoji:'🌆', from:10, to:15, img:"ده تا پانزده.png"},
-  { name:'ایالت میمونی', emoji:'🏛️', from:15, to:20, img:"پانزده تا بیست.png"},
+  { name:'دهکده میمونی', nameEn:'Monkey Hamlet', from:0,  to:5  , img:'' },
+  { name:'شهرک میمونی',  nameEn:'Monkey Town',   from:5,  to:10 , img:'' },
+  { name:'شهر میمونی',   nameEn:'Monkey City',   from:10, to:15 , img:'' },
+  { name:'ایالت میمونی', nameEn:'Monkey State',  from:15, to:20 , img:'' },
 ];
+function tierName(t){ return LANG==='fa' ? t.name : t.nameEn; }
 // هزینه ارتقا از سطح i به i+1 — ایندکس 0 یعنی هزینه‌ی سطح ۰ به ۱
 const CITY_COSTS = (()=>{
   const base = [200,700,1200,1800,2500,5000]; // 0→1 ... 5→6 (ارتقای مقام)
@@ -574,11 +712,128 @@ function cityTierFor(level){
   return CITY_TIERS[CITY_TIERS.length-1];
 }
 
+// ---------- Food production config (city) ----------
+const CITY_FOOD_BASE_SEC = 1800; // 30 min at city level 1
+const CITY_FOOD_STEP_SEC = 30;   // -30 sec per extra city level
+const CITY_FOOD_MIN_SEC  = 300;  // floor safety (5 min)
+
+// ---------- Monkey care config ----------
+const GYM_BASE_MIN  = 20;
+const BATH_BASE_MIN = 20;
+const CARE_TIME_STEP_MIN = 5; // reduced per upgrade level
+const CARE_UPGRADE_COSTS = [40000, 150000]; // lvl1->2, lvl2->3
+const BATH_COST = 300;
+
 // ---------- Stock market config ----------
-// ⚠️ قیمت‌ها فقط شبیه‌سازی سمت مرورگر هستن (بدون بک‌اند مشترک بین کاربرا)
+// ⚠️ قیمت فقط شبیه‌سازی سمت مرورگر هست (بدون بک‌اند مشترک بین کاربرا) — ادمین می‌تواند دستی قیمت را تنظیم کند
 const STOCKS = [
-  { id:'moz', name:'سهام موز', base:120, vol:0.035 },
+  { id:'moz', name:'سهام موز', nameEn:'Banana Stock', base:120, vol:0.035 },
 ];
+function stockName(s){ return LANG==='fa' ? s.name : s.nameEn; }
+
+// ---------- i18n ----------
+let LANG = localStorage.getItem('bl_lang') || 'fa';
+const I18N = {
+  fa:{
+    balanceLabel:'موجودی موز', tasksTitle:'ماموریت‌ها', lotteryTitle:'قرعه‌کشی', cityTitle:'شهر من',
+    stockTitle:'بورس موزستان', bankTitle:'بانک موزستان', profileSub:'پروفایل کاربر', adminTitle:'پنل مدیریت',
+    navHome:'خانه', navTasks:'ماموریت', navLottery:'قرعه‌کشی', navCity:'شهر', navStock:'بورس', navBank:'بانک', navProfile:'پروفایل',
+    monkeyUnlocked:'میمون تو آماده‌ست!', monkeyLocked:'تو هنوز میمون نوب و بی‌خاصیتی‌ای', monkeyLockHint:'توی سطح ۲ می‌تونی میمون بگیری',
+    bath:'حمام', feed:'غذا دادن', gym:'باشگاه',
+    lotPrizeLabel:'جایزه قرعه‌کشی', lotTimeLabel:'زمان قرعه‌کشی', lotWinnersLabel:'تعداد برندگان',
+    lotParticipantsLabel:'شرکت‌کنندگان', lotStatusLabel:'وضعیت', winnersTitle:'برندگان',
+    lotOpen:'باز', lotDrawn:'برگزار شد', lotUndetermined:'تعیین نشده', lotNoWinners:'هنوز قرعه‌کشی برگزار نشده',
+    joinLottery:'شرکت در قرعه‌کشی', alreadyJoined:'قبلاً شرکت کردی', lotteryDrawnBtn:'قرعه‌کشی برگزار شد',
+    joinedLotteryToast:'در قرعه‌کشی ثبت‌نام شدی',
+    foodStockLabel:'موجودی غذا', nextFoodLabel:'تولید غذای بعدی', cityMaxLevel:'شهر به بالاترین سطح رسیده',
+    cityUpgradeCostFmt:'هزینه ارتقا به سطح', cityRankUpgrade:'هزینه ارتقای مقام (سطح ۶)', cityLevelMax:'حداکثر',
+    cityUpgradeBtn:'ارتقا', cityUpgradedToast:'شهر ارتقا پیدا کرد!', notEnoughBanana:'موز کافی نداری',
+    backToMarket:'بازگشت به بازار', yourHolding:'موجودی شما', holdingValue:'ارزش دارایی', buy:'خرید', sell:'فروش',
+    tradeSuccessBuy:'خرید انجام شد', tradeSuccessSell:'فروش انجام شد', invalidQty:'تعداد معتبر وارد کن', notEnoughStock:'سهام کافی نداری',
+    bankBalanceLabel:'موجودی بانک', walletLabel:'آدرس ولت', deposit:'واریز', withdraw:'برداشت',
+    transferToPlayer:'انتقال موز به بازیکن', mainBalanceLabel:'موجودی اصلی', amount:'مبلغ',
+    confirm:'تایید', invalidAmount:'مبلغ معتبر وارد کن', notEnoughBank:'موجودی بانک کافی نیست', done:'با موفقیت انجام شد',
+    yourWallet:'آدرس ولت شما', bananaBalance:'موجودی موز', destWallet:'آدرس ولت مقصد', sendTransfer:'ارسال انتقال',
+    invalidInput:'اطلاعات را کامل وارد کن', cantSelfTransfer:'نمی‌توانی به خودت انتقال بدی', walletNotFound:'ولتی با این آدرس پیدا نشد',
+    transferSuccess:'انتقال موفق:', profileTitle:'پروفایل', joinedSince:'عضویت از', justNow:'همین حالا', lastLogin:'آخرین ورود',
+    tradesLabel:'معاملات', assetsTitle:'دارایی‌ها', bananaAsset:'موز', stockAsset:'ارزش سهام', cityAsset:'سطح شهر',
+    myHoldingsTitle:'سهام من', viewMarket:'مشاهده بازار', noHoldings:'هنوز سهامی نخریدی',
+    adminTabTasks:'ماموریت‌ها', adminTabLottery:'قرعه‌کشی', adminTabStock:'بورس', adminTabUsers:'کاربران',
+    taskTitleLabel:'عنوان ماموریت', taskLinkLabel:'لینک', taskRewardLabel:'جایزه (موز)', addTask:'افزودن ماموریت',
+    fillAllFields:'همه فیلدها را پر کن', taskAdded:'ماموریت اضافه شد', noTasks:'در حال حاضر ماموریتی وجود ندارد',
+    delete:'حذف', deleteTask:'حذف', prizeTitleLabel:'عنوان جایزه', lotTimeInputLabel:'زمان قرعه‌کشی',
+    winnersCountLabel:'تعداد برندگان', saveSettings:'ذخیره تنظیمات', lotterySaved:'تنظیمات قرعه‌کشی ذخیره شد',
+    drawLottery:'برگزاری قرعه‌کشی', noParticipants:'شرکت‌کننده‌ای وجود ندارد', confirmDraw:'قرعه‌کشی برگزار شود؟ این عمل قابل بازگشت نیست.',
+    lotteryDrawnToast:'قرعه‌کشی برگزار شد', winnersLabelAdmin:'برندگان:', notDrawnYetAdmin:'قرعه‌کشی هنوز برگزار نشده',
+    participantsCountSuffix:'شرکت‌کننده', adminNewsLabel:'متن خبر بورس', addNews:'افزودن خبر', noNews:'خبری ثبت نشده است',
+    adminSetPriceLabel:'تعیین قیمت سهام موز', setPrice:'ثبت قیمت', noUsers:'کاربری ثبت نشده (فقط کاربران همین دستگاه نمایش داده می‌شوند)',
+    ban:'مسدود کردن', unban:'رفع مسدودیت', joinedOn:'عضویت:',
+    task_openLink:'رفتن به لینک', task_claim:'دریافت جایزه', task_claimed:'دریافت شد', task_openFirst:'اول عضو شو',
+    task_hint:'اول رو لینک بزن، بعد جایزه فعال می‌شه', task_needOpenFirst:'اول باید عضو بشی', task_gotReward:'موز دریافت کردی!',
+    langRow:'زبان', usernameRow:'نام کاربری', logoutRow:'خروج', levelsModalTitle:'سطوح میمونی', currentBadge:'فعلی',
+    highestLevel:'بالاترین سطح', needFmt:'برای رسیدن به', needFmt2:'موز', langChanged:'زبان تغییر کرد',
+    yourUsername:'نام شما:', logoutConfirm:'از حساب خارج شوید؟ (اطلاعات دستگاه پاک می‌شود)', logoutInTelegram:'برای خروج، مینی‌اپ را در تلگرام ببندید',
+    banned:'حساب شما در موزستان مسدود شده است.', enteredAdmin:'وارد پنل مدیریت شدی',
+    // monkey care
+    ready:'آماده', level:'سطح', maxLevel:'حداکثر سطح', upgrade:'ارتقا', locked:'قفل', notNeeded:'نیازی نیست',
+    inProgress:'در حال انجام', gymInProgress:'در حال ورزش', bathInProgress:'در حال شستشو', startGym:'شروع باشگاه',
+    startBath:'رفتن به حمام', needBathFirst:'اول باید حموم بره', needFeedFirst:'اول باید بهش غذا بدی', noNeedBath:'نیازی به حمام نیست',
+    noFood:'غذا نداری! از شهر غذا جمع کن', alreadyFed:'میمون سیره', fedSuccess:'میمون غذا خورد و سرحاله!',
+    gymBusy:'میمون داره ورزش می‌کنه', bathBusy:'میمون داره حموم می‌کنه', gymStarted:'باشگاه شروع شد', bathStarted:'حمام شروع شد',
+    upgraded:'ارتقا انجام شد', bathCost:'هزینه هر حمام', statusReady:'آماده', statusNeedFeed:'نیاز به غذا',
+    statusNeedBath:'نیاز به حمام', statusNoFood:'غذا نداری',
+  },
+  en:{
+    balanceLabel:'Banana Balance', tasksTitle:'Tasks', lotteryTitle:'Lottery', cityTitle:'My City',
+    stockTitle:'Banana Stock Market', bankTitle:'Bananastan Bank', profileSub:'User Profile', adminTitle:'Admin Panel',
+    navHome:'Home', navTasks:'Tasks', navLottery:'Lottery', navCity:'City', navStock:'Stock', navBank:'Bank', navProfile:'Profile',
+    monkeyUnlocked:'Your monkey is ready!', monkeyLocked:'You still have a plain, useless monkey', monkeyLockHint:'You can get a monkey at level 2',
+    bath:'Bath', feed:'Feed', gym:'Gym',
+    lotPrizeLabel:'Lottery Prize', lotTimeLabel:'Draw Time', lotWinnersLabel:'Number of Winners',
+    lotParticipantsLabel:'Participants', lotStatusLabel:'Status', winnersTitle:'Winners',
+    lotOpen:'Open', lotDrawn:'Drawn', lotUndetermined:'Not set', lotNoWinners:'No draw has taken place yet',
+    joinLottery:'Join Lottery', alreadyJoined:'Already joined', lotteryDrawnBtn:'Lottery has been drawn',
+    joinedLotteryToast:'You joined the lottery',
+    foodStockLabel:'Food Stock', nextFoodLabel:'Next food in', cityMaxLevel:'City has reached max level',
+    cityUpgradeCostFmt:'Cost to upgrade to level', cityRankUpgrade:'Rank upgrade cost (level 6)', cityLevelMax:'Max',
+    cityUpgradeBtn:'Upgrade', cityUpgradedToast:'City upgraded!', notEnoughBanana:'Not enough bananas',
+    backToMarket:'Back to market', yourHolding:'Your holding', holdingValue:'Holding value', buy:'Buy', sell:'Sell',
+    tradeSuccessBuy:'Purchase completed', tradeSuccessSell:'Sale completed', invalidQty:'Enter a valid quantity', notEnoughStock:'Not enough shares',
+    bankBalanceLabel:'Bank Balance', walletLabel:'Wallet Address', deposit:'Deposit', withdraw:'Withdraw',
+    transferToPlayer:'Transfer to Player', mainBalanceLabel:'Main Balance', amount:'Amount',
+    confirm:'Confirm', invalidAmount:'Enter a valid amount', notEnoughBank:'Not enough bank balance', done:'Done successfully',
+    yourWallet:'Your wallet address', bananaBalance:'Banana Balance', destWallet:'Destination wallet address', sendTransfer:'Send Transfer',
+    invalidInput:'Please fill in all fields', cantSelfTransfer:'You cannot transfer to yourself', walletNotFound:'No wallet found with that address',
+    transferSuccess:'Transfer successful:', profileTitle:'Profile', joinedSince:'Joined', justNow:'Just now', lastLogin:'Last login',
+    tradesLabel:'Trades', assetsTitle:'Assets', bananaAsset:'Bananas', stockAsset:'Stock Value', cityAsset:'City Level',
+    myHoldingsTitle:'My Stocks', viewMarket:'View Market', noHoldings:"You haven't bought any stocks yet",
+    adminTabTasks:'Tasks', adminTabLottery:'Lottery', adminTabStock:'Stock', adminTabUsers:'Users',
+    taskTitleLabel:'Task Title', taskLinkLabel:'Link', taskRewardLabel:'Reward (Bananas)', addTask:'Add Task',
+    fillAllFields:'Fill in all fields', taskAdded:'Task added', noTasks:'No tasks currently available',
+    delete:'Delete', deleteTask:'Delete', prizeTitleLabel:'Prize Title', lotTimeInputLabel:'Draw Time',
+    winnersCountLabel:'Number of Winners', saveSettings:'Save Settings', lotterySaved:'Lottery settings saved',
+    drawLottery:'Draw Lottery', noParticipants:'No participants', confirmDraw:'Draw the lottery? This cannot be undone.',
+    lotteryDrawnToast:'Lottery drawn', winnersLabelAdmin:'Winners:', notDrawnYetAdmin:'Lottery not drawn yet',
+    participantsCountSuffix:'participants', adminNewsLabel:'Stock News Text', addNews:'Add News', noNews:'No news yet',
+    adminSetPriceLabel:'Set Banana Stock Price', setPrice:'Set Price', noUsers:'No users registered (only this device users are shown)',
+    ban:'Ban', unban:'Unban', joinedOn:'Joined:',
+    task_openLink:'Open Link', task_claim:'Claim Reward', task_claimed:'Claimed', task_openFirst:'Open link first',
+    task_hint:'Open the link first, then the reward will unlock', task_needOpenFirst:'Open the link first', task_gotReward:'You received the reward!',
+    langRow:'Language', usernameRow:'Username', logoutRow:'Log out', levelsModalTitle:'Monkey Levels', currentBadge:'Current',
+    highestLevel:'Highest level', needFmt:'To reach', needFmt2:'bananas', langChanged:'Language changed',
+    yourUsername:'Your name:', logoutConfirm:'Log out? (device data will be cleared)', logoutInTelegram:'To log out, close the mini app in Telegram',
+    banned:'Your account has been banned from Bananastan.', enteredAdmin:'You entered the admin panel',
+    // monkey care
+    ready:'Ready', level:'Level', maxLevel:'Max level', upgrade:'Upgrade', locked:'Locked', notNeeded:'Not needed',
+    inProgress:'In progress', gymInProgress:'Working out', bathInProgress:'Bathing', startGym:'Start Gym',
+    startBath:'Go to Bath', needBathFirst:'Needs a bath first', needFeedFirst:'Feed it first', noNeedBath:'No bath needed',
+    noFood:'No food! Collect food from your city', alreadyFed:'Monkey is already fed', fedSuccess:'Monkey is fed and energized!',
+    gymBusy:'Monkey is working out', bathBusy:'Monkey is bathing', gymStarted:'Gym started', bathStarted:'Bath started',
+    upgraded:'Upgraded', bathCost:'Cost per bath', statusReady:'Ready', statusNeedFeed:'Needs food',
+    statusNeedBath:'Needs bath', statusNoFood:'No food',
+  }
+};
+function t(key){ return (I18N[LANG] && I18N[LANG][key]) || key; }
 
 // ---------- DB (localStorage-backed) ----------
 const DB = {
@@ -591,9 +846,6 @@ const DB = {
     ]); },
   setTasks(t){ this.write('bl_tasks', t); },
 
-  getCode(){ return this.read('bl_code', {code:'BANANA500', reward:500}); },
-  setCode(c){ this.write('bl_code', c); },
-
   getLottery(){ return this.read('bl_lottery', {
       prize:'جایزه ویژه موزستان', time:'', winnersCount:3,
       participants:[], winners:[], drawn:false }); },
@@ -601,6 +853,9 @@ const DB = {
 
   getAllUsers(){ return this.read('bl_users', {}); },
   saveUser(u){ const all=this.getAllUsers(); all[u.id]=u; this.write('bl_users', all); },
+
+  getNews(){ return this.read('bl_news', []); },
+  setNews(n){ this.write('bl_news', n); },
 
   getStockData(){
     let data = this.read('bl_stock_data', null);
@@ -624,6 +879,8 @@ function getGuestId(){
   if(!id){ id = 'guest_' + Math.random().toString(36).slice(2,10); localStorage.setItem('bl_guest_id', id); }
   return id;
 }
+function genWallet(){ let s='BL'; const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; for(let i=0;i<10;i++) s+=chars[Math.floor(Math.random()*chars.length)]; return s; }
+function genCardNumber(){ let s=''; for(let i=0;i<16;i++) s+=Math.floor(Math.random()*10); return s.replace(/(.{4})/g,'$1 ').trim(); }
 
 let CURRENT_USER = loadOrCreateUser();
 
@@ -634,8 +891,11 @@ function loadOrCreateUser(){
   let u = all[id];
   if(!u){
     u = { id, name, username: tgUser?tgUser.username||'':'', photoUrl: tgUser?tgUser.photo_url||'':'',
-      bananas:0, lastWheelSpin:'', redeemedCodes:[], claimedTasks:[], banned:false, joinedAt: Date.now(),
-      cityLevel:0, stocks:{}, trades:0 };
+      bananas:0, claimedTasks:[], openedTasks:[], banned:false, joinedAt: Date.now(),
+      cityLevel:0, stocks:{}, trades:0,
+      wallet: genWallet(), cardNumber: genCardNumber(), bankBalance:0,
+      foodStock:0, lastFoodTick: Date.now(),
+      monkey:{ fed:false, needsBath:false, gymLevel:1, bathLevel:1, gymBusyUntil:0, bathBusyUntil:0 } };
   } else {
     u.name = name; // keep name fresh
     if(tgUser && tgUser.photo_url) u.photoUrl = tgUser.photo_url;
@@ -643,6 +903,13 @@ function loadOrCreateUser(){
     if(u.cityLevel===undefined) u.cityLevel = 0;
     if(!u.stocks) u.stocks = {};
     if(u.trades===undefined) u.trades = 0;
+    if(!u.openedTasks) u.openedTasks = [];
+    if(!u.wallet) u.wallet = genWallet();
+    if(!u.cardNumber) u.cardNumber = genCardNumber();
+    if(u.bankBalance===undefined) u.bankBalance = 0;
+    if(u.foodStock===undefined) u.foodStock = 0;
+    if(!u.lastFoodTick) u.lastFoodTick = Date.now();
+    if(!u.monkey) u.monkey = { fed:false, needsBath:false, gymLevel:1, bathLevel:1, gymBusyUntil:0, bathBusyUntil:0 };
   }
   DB.saveUser(u);
   return u;
@@ -651,13 +918,17 @@ function loadOrCreateUser(){
 function persistUser(){ DB.saveUser(CURRENT_USER); }
 
 // ---------- Helpers ----------
-function fmt(n){ return n.toLocaleString('en-US'); }
-function toast(msg){
+function fmt(n){ return Math.round(n).toLocaleString('en-US'); }
+function formatTime(sec){
+  const m = Math.floor(sec/60), s = sec%60;
+  return (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+}
+function toast(msg, iconName){
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
+  t.innerHTML = (iconName? '<svg class="icon"><use href="#i-'+iconName+'"/></svg>' : '') + '<span>'+msg+'</span>';
+  t.classList.add('show');
   clearTimeout(toast._h); toast._h = setTimeout(()=>t.classList.remove('show'), 2200);
 }
-function todayStr(){ return new Date().toISOString().slice(0,10); }
 
 function getLevelInfo(bananas){
   let idx = 0;
@@ -671,20 +942,38 @@ function getLevelInfo(bananas){
 
 // ---------- Ban check ----------
 if(CURRENT_USER.banned){
-  document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;padding:20px;font-family:Vazirmatn,sans-serif;color:#FFF6E0">حساب شما در موزستان مسدود شده است.</div>';
+  document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;padding:20px;font-family:Vazirmatn,sans-serif;color:#F1EFE9">'+t('banned')+'</div>';
   throw new Error('banned');
+}
+
+// ---------- Language ----------
+function applyLanguage(){
+  document.getElementById('htmlRoot').lang = LANG;
+  document.getElementById('htmlRoot').dir = LANG==='fa' ? 'rtl' : 'ltr';
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent = t(el.dataset.i18n); });
+  document.getElementById('langLabel').textContent = LANG==='fa' ? 'فارسی' : 'English';
+  renderHeader();
+  const activeEl = document.querySelector('.screen.active');
+  if(activeEl){ const name = activeEl.id.replace('screen-',''); renderScreenContent(name); }
+}
+function toggleLanguage(){
+  LANG = LANG==='fa' ? 'en' : 'fa';
+  localStorage.setItem('bl_lang', LANG);
+  applyLanguage();
+  toast(t('langChanged'));
 }
 
 // ---------- Render: header / balance / level ----------
 function renderHeader(){
   document.getElementById('balanceVal').textContent = fmt(CURRENT_USER.bananas);
-  const {cur, next, pct} = getLevelInfo(CURRENT_USER.bananas);
-  document.getElementById('lvEmoji').textContent = cur.emoji;
-  document.getElementById('lvName').textContent = cur.name;
+  const {cur, pct} = getLevelInfo(CURRENT_USER.bananas);
+  const lvUse = document.getElementById('lvBadgeIcon').querySelector('use');
+  if(lvUse) lvUse.setAttribute('href','#i-'+cur.icon);
+  document.getElementById('lvName').textContent = levelName(cur);
   document.getElementById('lvBar').style.width = pct+'%';
 
   document.getElementById('drawerName').textContent = CURRENT_USER.name;
-  document.getElementById('drawerLevel').textContent = cur.name;
+  document.getElementById('drawerLevel').textContent = levelName(cur);
   document.getElementById('drawerInitial').textContent = (CURRENT_USER.name||'?').replace('@','').slice(0,1).toUpperCase();
 
   const isAdmin = ADMIN_USERNAMES.includes(CURRENT_USER.username) || sessionStorage.getItem('bl_admin')==='1';
@@ -694,25 +983,179 @@ function renderHeader(){
 }
 
 // ---------- Monkey panel (home) ----------
-// از سطح ۲ (نوچه میمون) به بعد قفل باز می‌شه. عکس میمون رو خودت بذار (id="mkEmoji" رو با <img> جایگزین کن)
 function renderMonkeyPanel(){
   const {idx} = getLevelInfo(CURRENT_USER.bananas);
   const circle = document.getElementById('monkeyCircle');
-  const emoji = document.getElementById('mkEmoji');
   const text = document.getElementById('mkText');
   const lock = document.getElementById('mkLock');
+  const care = document.getElementById('monkeyCare');
   if(idx >= 1){
     circle.classList.add('unlocked');
-    emoji.textContent = '🐵';
-    text.textContent = 'میمون تو آماده‌ست!';
+    text.textContent = t('monkeyUnlocked');
     lock.style.display = 'none';
+    care.style.display = 'grid';
+    renderCareBoxes();
   } else {
     circle.classList.remove('unlocked');
-    emoji.textContent = '🙈';
-    text.textContent = 'تو هنوز میمون نوب و بی‌خاصیتی‌ای';
-    lock.style.display = 'block';
-    lock.textContent = 'توی سطح ۲ می‌تونی میمون بگیری';
+    text.textContent = t('monkeyLocked');
+    document.getElementById('mkLockText').textContent = t('monkeyLockHint');
+    lock.style.display = 'flex';
+    care.style.display = 'none';
   }
+}
+
+// ---------- Food production (city) ----------
+function foodIntervalSec(){
+  const lv = CURRENT_USER.cityLevel||0;
+  if(lv<1) return null;
+  return Math.max(CITY_FOOD_MIN_SEC, CITY_FOOD_BASE_SEC-(lv-1)*CITY_FOOD_STEP_SEC);
+}
+function updateFoodProduction(){
+  const interval = foodIntervalSec();
+  if(interval==null){ CURRENT_USER.lastFoodTick = Date.now(); return; }
+  const intervalMs = interval*1000;
+  const now = Date.now();
+  const elapsed = now - (CURRENT_USER.lastFoodTick||now);
+  const produced = Math.floor(elapsed/intervalMs);
+  if(produced>0){
+    CURRENT_USER.foodStock = Math.min(99, (CURRENT_USER.foodStock||0)+produced);
+    CURRENT_USER.lastFoodTick += produced*intervalMs;
+    persistUser();
+  }
+}
+function foodTimeLeftSec(){
+  const interval = foodIntervalSec();
+  if(interval==null) return null;
+  const elapsed = (Date.now() - (CURRENT_USER.lastFoodTick||Date.now()))/1000;
+  return Math.max(0, Math.ceil(interval - (elapsed % interval)));
+}
+
+// ---------- Monkey care logic ----------
+function gymDurationMs(){ return Math.max(5, GYM_BASE_MIN - (CURRENT_USER.monkey.gymLevel-1)*CARE_TIME_STEP_MIN)*60000; }
+function bathDurationMs(){ return Math.max(5, BATH_BASE_MIN - (CURRENT_USER.monkey.bathLevel-1)*CARE_TIME_STEP_MIN)*60000; }
+
+function finishGymIfDone(){
+  const m = CURRENT_USER.monkey;
+  if(m.gymBusyUntil && Date.now()>=m.gymBusyUntil){
+    m.needsBath = true; m.gymBusyUntil = 0; persistUser();
+  }
+}
+function finishBathIfDone(){
+  const m = CURRENT_USER.monkey;
+  if(m.bathBusyUntil && Date.now()>=m.bathBusyUntil){
+    m.needsBath = false; m.bathBusyUntil = 0; persistUser();
+  }
+}
+
+function feedMonkey(){
+  updateFoodProduction();
+  if((CURRENT_USER.foodStock||0)<=0){ toast(t('noFood'),'banana'); renderCareBoxes(); return; }
+  const m = CURRENT_USER.monkey;
+  if(m.fed){ toast(t('alreadyFed')); return; }
+  CURRENT_USER.foodStock -= 1;
+  m.fed = true;
+  persistUser(); toast(t('fedSuccess'),'check'); renderCareBoxes();
+}
+
+function startGym(){
+  finishGymIfDone(); finishBathIfDone();
+  const m = CURRENT_USER.monkey; const now = Date.now();
+  if(m.gymBusyUntil>now){ toast(t('gymBusy')); return; }
+  if(m.needsBath){ toast(t('needBathFirst')); return; }
+  if(!m.fed){ toast(t('needFeedFirst')); return; }
+  m.fed = false;
+  m.gymBusyUntil = now + gymDurationMs();
+  persistUser(); toast(t('gymStarted'),'check'); renderCareBoxes(); openCareModal('gym');
+}
+function startBath(){
+  finishGymIfDone(); finishBathIfDone();
+  const m = CURRENT_USER.monkey; const now = Date.now();
+  if(m.bathBusyUntil>now){ toast(t('bathBusy')); return; }
+  if(!m.needsBath){ toast(t('noNeedBath')); return; }
+  if(CURRENT_USER.bananas<BATH_COST){ toast(t('notEnoughBanana')); return; }
+  CURRENT_USER.bananas -= BATH_COST;
+  m.bathBusyUntil = now + bathDurationMs();
+  persistUser(); renderHeader(); toast(t('bathStarted'),'check'); renderCareBoxes(); openCareModal('bath');
+}
+function upgradeCare(type){
+  const m = CURRENT_USER.monkey;
+  const lvKey = type+'Level';
+  const lv = m[lvKey];
+  if(lv>=3){ toast(t('maxLevel')); return; }
+  const cost = CARE_UPGRADE_COSTS[lv-1];
+  if(CURRENT_USER.bananas<cost){ toast(t('notEnoughBanana')); return; }
+  CURRENT_USER.bananas -= cost;
+  m[lvKey] = lv+1;
+  persistUser(); renderHeader(); toast(t('upgraded'),'check'); renderCareBoxes(); openCareModal(type);
+}
+
+function careBoxStatusText(type){
+  const m = CURRENT_USER.monkey; const now = Date.now();
+  if(type==='feed'){
+    updateFoodProduction();
+    if(m.fed) return t('statusReady');
+    if((CURRENT_USER.foodStock||0)<=0) return t('statusNoFood');
+    return t('statusNeedFeed');
+  }
+  if(type==='gym'){
+    if(m.gymBusyUntil>now) return formatTime(Math.ceil((m.gymBusyUntil-now)/1000));
+    if(m.needsBath) return t('statusNeedBath');
+    if(!m.fed) return t('statusNeedFeed');
+    return t('ready');
+  }
+  if(type==='bath'){
+    if(m.bathBusyUntil>now) return formatTime(Math.ceil((m.bathBusyUntil-now)/1000));
+    if(!m.needsBath) return t('notNeeded');
+    return t('ready');
+  }
+}
+function renderCareBoxes(){
+  finishGymIfDone(); finishBathIfDone();
+  document.getElementById('careStatusFeed').textContent = careBoxStatusText('feed');
+  document.getElementById('careStatusGym').textContent = careBoxStatusText('gym');
+  document.getElementById('careStatusBath').textContent = careBoxStatusText('bath');
+  const m = CURRENT_USER.monkey;
+  document.getElementById('careBoxBath').classList.toggle('needs-attn', m.needsBath && m.bathBusyUntil<=Date.now());
+  document.getElementById('careBoxGym').classList.toggle('disabled-box', m.needsBath || !m.fed);
+}
+
+function openCareModal(type){
+  finishGymIfDone(); finishBathIfDone();
+  const m = CURRENT_USER.monkey;
+  const isGym = type==='gym';
+  const lv = isGym?m.gymLevel:m.bathLevel;
+  const busyUntil = isGym?m.gymBusyUntil:m.bathBusyUntil;
+  const now = Date.now();
+  let statusHtml, actionHtml;
+  if(busyUntil>now){
+    const secLeft = Math.ceil((busyUntil-now)/1000);
+    statusHtml = t(isGym?'gymInProgress':'bathInProgress')+': '+formatTime(secLeft);
+    actionHtml = '<button class="btn btn-ghost" style="width:100%" disabled>'+t('inProgress')+'</button>';
+  } else if(isGym && m.needsBath){
+    statusHtml = t('needBathFirst');
+    actionHtml = '<button class="btn btn-ghost" style="width:100%" disabled>'+t('locked')+'</button>';
+  } else if(isGym && !m.fed){
+    statusHtml = t('needFeedFirst');
+    actionHtml = '<button class="btn btn-ghost" style="width:100%" disabled>'+t('locked')+'</button>';
+  } else if(!isGym && !m.needsBath){
+    statusHtml = t('noNeedBath');
+    actionHtml = '<button class="btn btn-ghost" style="width:100%" disabled>'+t('notNeeded')+'</button>';
+  } else {
+    statusHtml = t('ready');
+    actionHtml = '<button class="btn btn-main" style="width:100%" onclick="'+(isGym?'startGym()':'startBath()')+'">'+t(isGym?'startGym':'startBath')+'</button>';
+  }
+  const upgradeHtml = lv>=3
+    ? '<div class="muted" style="margin-top:10px;text-align:center">'+t('maxLevel')+'</div>'
+    : '<button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="upgradeCare(\''+type+'\')">'+t('upgrade')+' ('+fmt(CARE_UPGRADE_COSTS[lv-1])+' <svg class="icon icon-fill" style="width:12px;height:12px"><use href="#i-banana"/></svg>)</button>';
+
+  document.getElementById('careModalTitle').textContent = t(isGym?'gym':'bath');
+  document.getElementById('careModalBody').innerHTML =
+    '<div class="muted" style="text-align:center;margin-bottom:10px;font-weight:700;color:var(--banana)">'+statusHtml+'</div>'+
+    '<div class="muted" style="margin-bottom:12px;text-align:center">'+t('level')+': '+lv+' / 3</div>'+
+    actionHtml + upgradeHtml +
+    (!isGym ? '<div class="muted" style="margin-top:10px;text-align:center">'+t('bathCost')+': 300 <svg class="icon icon-fill" style="width:12px;height:12px"><use href="#i-banana"/></svg></div>' : '');
+  document.getElementById('overlayModal').classList.add('active');
+  document.getElementById('careModal').classList.add('active');
 }
 
 // ---------- Screens / nav ----------
@@ -721,11 +1164,16 @@ function showScreen(name){
   document.getElementById('screen-'+name).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.s===name));
   closeAllOverlays();
+  renderScreenContent(name);
+}
+function renderScreenContent(name){
+  if(name==='home') renderMonkeyPanel();
   if(name==='tasks') renderTasks();
   if(name==='lottery') renderLottery();
   if(name==='admin') renderAdmin();
   if(name==='city') renderCity();
-  if(name==='stock'){ closeStockDetail(); renderStockList(); }
+  if(name==='stock'){ closeStockDetail(); renderNewsTicker(); renderStockList(); }
+  if(name==='bank') renderBank();
   if(name==='profile') renderProfile();
 }
 
@@ -739,16 +1187,13 @@ function closeAllOverlays(){
   document.getElementById('drawer').classList.remove('active');
   document.getElementById('overlayModal').classList.remove('active');
   document.getElementById('levelModal').classList.remove('active');
+  document.getElementById('careModal').classList.remove('active');
+  document.getElementById('bankModal').classList.remove('active');
 }
-function toggleLanguage(){
-  const el = document.getElementById('langLabel');
-  el.textContent = el.textContent==='فارسی' ? 'English' : 'فارسی';
-  toast('این نسخه دمو فقط زبان فارسی را پشتیبانی می‌کند');
-}
-function showProfileName(){ toast('نام شما: ' + CURRENT_USER.name); }
+function showProfileName(){ toast(t('yourUsername')+' '+CURRENT_USER.name, 'user'); }
 function logoutUser(){
-  if(tg){ toast('برای خروج، مینی‌اپ را در تلگرام ببندید'); return; }
-  if(confirm('از حساب خارج شوید؟ (اطلاعات دستگاه پاک می‌شود)')){
+  if(tg){ toast(t('logoutInTelegram')); return; }
+  if(confirm(t('logoutConfirm'))){
     localStorage.removeItem('bl_guest_id');
     location.reload();
   }
@@ -758,14 +1203,14 @@ function openLevels(){
   const {idx} = getLevelInfo(CURRENT_USER.bananas);
   wrap.innerHTML = LEVELS.map((lv,i)=>{
     const next = LEVELS[i+1];
-    return `<div class="level-row ${i===idx?'current':''}">
-      <div class="lv-e">${lv.emoji}</div>
-      <div class="lv-t">
-        <div style="font-weight:700">${lv.name}</div>
-        <div class="lv-need">${next? 'برای رسیدن به '+next.name+': '+fmt(next.need)+' موز' : 'بالاترین سطح'}</div>
-      </div>
-      ${i===idx?'<span class="badge">سطح فعلی</span>':''}
-    </div>`;
+    return '<div class="level-row '+(i===idx?'current':'')+'">'+
+      '<div class="lv-e"><svg class="icon icon-fill"><use href="#i-'+lv.icon+'"/></svg></div>'+
+      '<div class="lv-t">'+
+        '<div style="font-weight:800">'+levelName(lv)+'</div>'+
+        '<div class="lv-need">'+(next? t('needFmt')+' '+levelName(next)+': '+fmt(next.need)+' '+t('needFmt2') : t('highestLevel'))+'</div>'+
+      '</div>'+
+      (i===idx?'<span class="badge">'+t('currentBadge')+'</span>':'')+
+    '</div>';
   }).join('');
   document.getElementById('overlayModal').classList.add('active');
   document.getElementById('levelModal').classList.add('active');
@@ -775,225 +1220,125 @@ function openLevels(){
 function renderTasks(){
   const tasks = DB.getTasks();
   const list = document.getElementById('tasksList');
-  if(tasks.length===0){ list.innerHTML = '<div class="empty-state">در حال حاضر ماموریتی وجود ندارد</div>'; return; }
-  list.innerHTML = tasks.map(t=>{
-    const claimed = CURRENT_USER.claimedTasks.includes(t.id);
-    return `<div class="card task-card">
-      <div class="row">
-        <div>
-          <div class="t-title">${t.title}</div>
-          <div class="t-reward">🍌 ${fmt(t.reward)} موز</div>
-        </div>
-      </div>
-      <div class="row" style="margin-top:12px">
-        <button class="btn btn-ghost" onclick="window.open('${t.link}','_blank')">رفتن به لینک</button>
-        <button class="btn ${claimed?'btn-ghost':'btn-main'}" ${claimed?'disabled':''} onclick="claimTask('${t.id}')">
-          ${claimed?'دریافت شد ✓':'دریافت جایزه'}
-        </button>
-      </div>
-    </div>`;
+  if(tasks.length===0){ list.innerHTML = '<div class="empty-state">'+t('noTasks')+'</div>'; return; }
+  list.innerHTML = tasks.map(tk=>{
+    const claimed = CURRENT_USER.claimedTasks.includes(tk.id);
+    const opened = CURRENT_USER.openedTasks.includes(tk.id);
+    let claimBtnHtml;
+    if(claimed){
+      claimBtnHtml = '<button class="btn btn-ghost" disabled><svg class="icon"><use href="#i-check"/></svg>'+t('task_claimed')+'</button>';
+    } else if(!opened){
+      claimBtnHtml = '<button class="btn btn-ghost" disabled><svg class="icon"><use href="#i-lock"/></svg>'+t('task_openFirst')+'</button>';
+    } else {
+      claimBtnHtml = '<button class="btn btn-main" onclick="claimTask(\''+tk.id+'\')"><svg class="icon icon-fill"><use href="#i-banana"/></svg>'+t('task_claim')+'</button>';
+    }
+    return '<div class="card task-card">'+
+      '<div class="row">'+
+        '<div>'+
+          '<div class="t-title"><svg class="icon"><use href="#i-tasks"/></svg>'+tk.title+'</div>'+
+          '<div class="t-reward"><svg class="icon icon-fill"><use href="#i-banana"/></svg>'+fmt(tk.reward)+'</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="row" style="margin-top:12px">'+
+        '<button class="btn btn-ghost" onclick="openTaskLink(\''+tk.id+'\',\''+tk.link+'\')"><svg class="icon"><use href="#i-link"/></svg>'+t('task_openLink')+'</button>'+
+        claimBtnHtml+
+      '</div>'+
+      (!opened && !claimed ? '<div class="task-hint"><svg class="icon"><use href="#i-lock"/></svg>'+t('task_hint')+'</div>' : '')+
+    '</div>';
   }).join('');
+}
+function openTaskLink(id, link){
+  if(!CURRENT_USER.openedTasks.includes(id)){
+    CURRENT_USER.openedTasks.push(id);
+    persistUser();
+  }
+  window.open(link, '_blank');
+  renderTasks();
 }
 function claimTask(id){
   if(CURRENT_USER.claimedTasks.includes(id)) return;
-  const t = DB.getTasks().find(x=>x.id===id);
-  if(!t) return;
+  if(!CURRENT_USER.openedTasks.includes(id)){ toast(t('task_needOpenFirst'), 'lock'); return; }
+  const tk = DB.getTasks().find(x=>x.id===id);
+  if(!tk) return;
   CURRENT_USER.claimedTasks.push(id);
-  CURRENT_USER.bananas += t.reward;
+  CURRENT_USER.bananas += tk.reward;
   persistUser(); renderHeader(); renderTasks();
-  toast('🎉 '+fmt(t.reward)+' موز دریافت کردی!');
-}
-
-// ---------- Casino: wheel ----------
-function openGame(name){
-  document.getElementById('casinoHome').style.display='none';
-  document.getElementById('wheelGame').style.display = name==='wheel' ? 'block':'none';
-  document.getElementById('codeGame').style.display = name==='code' ? 'block':'none';
-  if(name==='wheel'){ drawWheel(0); updateSpinNote(); }
-}
-function closeGame(){
-  document.getElementById('casinoHome').style.display='block';
-  document.getElementById('wheelGame').style.display='none';
-  document.getElementById('codeGame').style.display='none';
-}
-function updateSpinNote(){
-  const note = document.getElementById('spinNote');
-  const btn = document.getElementById('spinBtn');
-  if(CURRENT_USER.lastWheelSpin===todayStr()){
-    note.textContent = 'فردا دوباره امتحان کن — هر روز فقط یک چرخش رایگان داری';
-    btn.disabled = true;
-  } else {
-    note.textContent = 'هر روز فقط یک بار می‌تونی گردونه رو بچرخونی';
-    btn.disabled = false;
-  }
-}
-let wheelRotation = 0;
-function drawWheel(rot){
-  const c = document.getElementById('wheelCanvas');
-  const ctx = c.getContext('2d');
-  const r = c.width/2;
-  const n = WHEEL_PRIZES.length;
-  const slice = (Math.PI*2)/n;
-  ctx.clearRect(0,0,c.width,c.height);
-  ctx.save();
-  ctx.translate(r,r);
-  ctx.rotate(rot);
-  for(let i=0;i<n;i++){
-    ctx.beginPath();
-    ctx.moveTo(0,0);
-    ctx.arc(0,0,r-4, i*slice, (i+1)*slice);
-    ctx.closePath();
-    ctx.fillStyle = WHEEL_PRIZES[i].color;
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(255,246,224,.25)';
-    ctx.stroke();
-    ctx.save();
-    ctx.rotate(i*slice + slice/2);
-    ctx.textAlign = 'right';
-    ctx.fillStyle = '#FFF6E0';
-    ctx.font = 'bold 13px Vazirmatn, sans-serif';
-    ctx.fillText(WHEEL_PRIZES[i].label, r-16, 5);
-    ctx.restore();
-  }
-  ctx.restore();
-}
-function pickWeightedIndex(){
-  const total = WHEEL_PRIZES.reduce((s,p)=>s+p.weight,0);
-  let r = Math.random()*total;
-  for(let i=0;i<WHEEL_PRIZES.length;i++){ r -= WHEEL_PRIZES[i].weight; if(r<=0) return i; }
-  return WHEEL_PRIZES.length-1;
-}
-function spinWheel(){
-  if(CURRENT_USER.lastWheelSpin===todayStr()) return;
-  const idx = pickWeightedIndex();
-  const n = WHEEL_PRIZES.length;
-  const slice = (Math.PI*2)/n;
-  const targetAngle = (Math.PI*2*6) + (Math.PI*2 - (idx*slice + slice/2)) ; // land pointer (top) on slice idx
-  const start = performance.now();
-  const duration = 3200;
-  const from = wheelRotation % (Math.PI*2);
-  const to = from + targetAngle;
-  document.getElementById('spinBtn').disabled = true;
-  function frame(now){
-    const t = Math.min(1, (now-start)/duration);
-    const ease = 1 - Math.pow(1-t, 4);
-    const rot = from + (to-from)*ease;
-    drawWheel(rot);
-    if(t<1){ requestAnimationFrame(frame); }
-    else{
-      wheelRotation = to;
-      finishSpin(idx);
-    }
-  }
-  requestAnimationFrame(frame);
-}
-function finishSpin(idx){
-  const prize = WHEEL_PRIZES[idx];
-  CURRENT_USER.lastWheelSpin = todayStr();
-  if(prize.value>0){ CURRENT_USER.bananas += prize.value; }
-  persistUser(); renderHeader(); updateSpinNote();
-  toast(prize.value>0 ? ('🎉 برنده '+fmt(prize.value)+' موز شدی!') : '😢 پوچ! فردا دوباره امتحان کن');
-}
-
-// ---------- Casino: code redeem ----------
-function redeemCode(){
-  const input = document.getElementById('codeInput');
-  const val = input.value.trim();
-  if(!val){ toast('یک کد وارد کن'); return; }
-  const active = DB.getCode();
-  if(val.toUpperCase() !== String(active.code).toUpperCase()){ toast('کد نامعتبر است'); return; }
-  if(CURRENT_USER.redeemedCodes.includes(active.code)){ toast('این کد را قبلاً استفاده کرده‌ای'); return; }
-  CURRENT_USER.redeemedCodes.push(active.code);
-  CURRENT_USER.bananas += active.reward;
-  persistUser(); renderHeader();
-  toast('🎉 '+fmt(active.reward)+' موز دریافت کردی!');
-  input.value='';
+  toast(fmt(tk.reward)+' '+t('task_gotReward'), 'banana');
 }
 
 // ---------- Lottery ----------
 function renderLottery(){
   const lot = DB.getLottery();
   document.getElementById('lotPrize').textContent = lot.prize || '-';
-  document.getElementById('lotTime').textContent = lot.time ? new Date(lot.time).toLocaleString('fa-IR') : 'تعیین نشده';
+  document.getElementById('lotTime').textContent = lot.time ? new Date(lot.time).toLocaleString(LANG==='fa'?'fa-IR':'en-US') : t('lotUndetermined');
   document.getElementById('lotWinnersCount').textContent = lot.winnersCount;
   document.getElementById('lotParticipants').textContent = lot.participants.length;
-  document.getElementById('lotStatus').textContent = lot.drawn ? 'برگزار شد' : 'باز';
+  document.getElementById('lotStatus').textContent = lot.drawn ? t('lotDrawn') : t('lotOpen');
 
   const joined = lot.participants.some(p=>p.id===CURRENT_USER.id);
   const btn = document.getElementById('joinLotBtn');
-  if(lot.drawn){ btn.textContent='قرعه‌کشی برگزار شد'; btn.disabled=true; }
-  else if(joined){ btn.textContent='شرکت کردی ✓'; btn.disabled=true; }
-  else { btn.textContent='شرکت در قرعه‌کشی'; btn.disabled=false; }
+  if(lot.drawn){ btn.textContent=t('lotteryDrawnBtn'); btn.disabled=true; }
+  else if(joined){ btn.textContent=t('alreadyJoined'); btn.disabled=true; }
+  else { btn.textContent=t('joinLottery'); btn.disabled=false; }
 
   const wl = document.getElementById('winnersList');
   wl.innerHTML = lot.winners.length
-    ? lot.winners.map(w=>`<div class="winner-item">🏆 ${w.name}</div>`).join('')
-    : '<div class="empty-state">هنوز قرعه‌کشی برگزار نشده</div>';
+    ? lot.winners.map(w=>'<div class="winner-item"><svg class="icon"><use href="#i-trophy"/></svg>'+w.name+'</div>').join('')
+    : '<div class="empty-state">'+t('lotNoWinners')+'</div>';
 }
 function joinLottery(){
   const lot = DB.getLottery();
   if(lot.drawn || lot.participants.some(p=>p.id===CURRENT_USER.id)) return;
   lot.participants.push({id:CURRENT_USER.id, name:CURRENT_USER.name});
   DB.setLottery(lot);
-  toast('✅ در قرعه‌کشی ثبت‌نام شدی');
+  toast(t('joinedLotteryToast'), 'check');
   renderLottery();
 }
 
 // ---------- Admin ----------
 function tryEnterAdminByHash(){
   if(location.hash==='#admin' && sessionStorage.getItem('bl_admin')!=='1'){
-    const pass = prompt('رمز عبور پنل مدیریت:');
-    if(pass===ADMIN_PASSWORD){ sessionStorage.setItem('bl_admin','1'); renderHeader(); toast('وارد پنل مدیریت شدی'); showScreen('admin'); }
+    const pass = prompt(LANG==='fa'?'رمز عبور پنل مدیریت:':'Admin panel password:');
+    if(pass===ADMIN_PASSWORD){ sessionStorage.setItem('bl_admin','1'); renderHeader(); toast(t('enteredAdmin')); showScreen('admin'); }
   }
 }
 function switchAdminTab(name){
-  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.toggle('active', t.dataset.t===name));
+  document.querySelectorAll('.admin-tab').forEach(tb=>tb.classList.toggle('active', tb.dataset.t===name));
   document.querySelectorAll('.admin-pane').forEach(p=>p.classList.toggle('active', p.id==='admin-'+name));
 }
 function renderAdmin(){
-  renderAdminTasks(); renderAdminCode(); renderAdminLottery(); renderAdminUsers();
+  renderAdminTasks(); renderAdminLottery(); renderAdminStock(); renderAdminUsers();
 }
 function renderAdminTasks(){
   const tasks = DB.getTasks();
-  document.getElementById('adminTasksList').innerHTML = tasks.map(t=>`
-    <div class="list-item">
-      <div><b>${t.title}</b><br><span class="muted">🍌 ${fmt(t.reward)} — ${t.link}</span></div>
-      <button class="btn btn-danger small-btn" onclick="adminDeleteTask('${t.id}')">حذف</button>
-    </div>`).join('') || '<div class="empty-state">ماموریتی ثبت نشده</div>';
+  document.getElementById('adminTasksList').innerHTML = tasks.map(tk=>
+    '<div class="list-item">'+
+      '<div><b>'+tk.title+'</b><br><span class="muted">'+fmt(tk.reward)+' — '+tk.link+'</span></div>'+
+      '<button class="btn btn-danger small-btn" onclick="adminDeleteTask(\''+tk.id+'\')">'+t('delete')+'</button>'+
+    '</div>').join('') || '<div class="empty-state">'+t('noTasks')+'</div>';
 }
 function adminAddTask(){
   const title = document.getElementById('atTitle').value.trim();
   const link = document.getElementById('atLink').value.trim();
   const reward = parseInt(document.getElementById('atReward').value)||0;
-  if(!title||!link||!reward){ toast('همه فیلدها را پر کن'); return; }
+  if(!title||!link||!reward){ toast(t('fillAllFields')); return; }
   const tasks = DB.getTasks();
   tasks.push({id:'t'+Date.now(), title, link, reward});
   DB.setTasks(tasks);
   document.getElementById('atTitle').value=''; document.getElementById('atLink').value=''; document.getElementById('atReward').value='';
-  renderAdminTasks(); toast('ماموریت اضافه شد');
+  renderAdminTasks(); toast(t('taskAdded'));
 }
 function adminDeleteTask(id){
-  DB.setTasks(DB.getTasks().filter(t=>t.id!==id));
+  DB.setTasks(DB.getTasks().filter(tk=>tk.id!==id));
   renderAdminTasks();
-}
-function renderAdminCode(){
-  const c = DB.getCode();
-  document.getElementById('adminCurrentCode').innerHTML = `<div class="muted">کد فعال فعلی:</div><b>${c.code}</b> — 🍌 ${fmt(c.reward)} موز`;
-}
-function adminSetCode(){
-  const code = document.getElementById('acCode').value.trim();
-  const reward = parseInt(document.getElementById('acReward').value)||0;
-  if(!code||!reward){ toast('کد و جایزه را وارد کن'); return; }
-  DB.setCode({code, reward});
-  renderAdminCode(); toast('کد ثبت شد');
 }
 function renderAdminLottery(){
   const lot = DB.getLottery();
   document.getElementById('alPrize').value = lot.prize||'';
   document.getElementById('alTime').value = lot.time||'';
   document.getElementById('alWinners').value = lot.winnersCount||1;
-  document.getElementById('alParticipantsCount').textContent = lot.participants.length + ' شرکت‌کننده';
-  document.getElementById('adminLotWinners').textContent = lot.drawn ? ('برندگان: '+lot.winners.map(w=>w.name).join('، ')) : 'قرعه‌کشی هنوز برگزار نشده';
+  document.getElementById('alParticipantsCount').textContent = lot.participants.length + ' ' + t('participantsCountSuffix');
+  document.getElementById('adminLotWinners').textContent = lot.drawn ? (t('winnersLabelAdmin')+' '+lot.winners.map(w=>w.name).join('، ')) : t('notDrawnYetAdmin');
 }
 function adminSetLottery(){
   const lot = DB.getLottery();
@@ -1001,12 +1346,12 @@ function adminSetLottery(){
   lot.time = document.getElementById('alTime').value;
   lot.winnersCount = parseInt(document.getElementById('alWinners').value)||1;
   DB.setLottery(lot);
-  toast('تنظیمات قرعه‌کشی ذخیره شد');
+  toast(t('lotterySaved'));
 }
 function adminDrawLottery(){
   const lot = DB.getLottery();
-  if(lot.participants.length===0){ toast('شرکت‌کننده‌ای وجود ندارد'); return; }
-  if(!confirm('قرعه‌کشی برگزار شود؟ این عمل قابل بازگشت نیست.')) return;
+  if(lot.participants.length===0){ toast(t('noParticipants')); return; }
+  if(!confirm(t('confirmDraw'))) return;
   const pool = [...lot.participants];
   const winners = [];
   const count = Math.min(lot.winnersCount, pool.length);
@@ -1017,22 +1362,62 @@ function adminDrawLottery(){
   lot.winners = winners; lot.drawn = true;
   DB.setLottery(lot);
   renderAdminLottery();
-  toast('قرعه‌کشی برگزار شد 🎉');
+  toast(t('lotteryDrawnToast'), 'trophy');
+}
+function renderAdminStock(){
+  const news = DB.getNews();
+  document.getElementById('adminNewsListWrap').innerHTML = news.length ? news.map((n,i)=>
+    '<div class="list-item"><div>'+n+'</div><button class="btn btn-danger small-btn" onclick="adminDeleteNews('+i+')">'+t('delete')+'</button></div>'
+  ).join('') : '<div class="empty-state">'+t('noNews')+'</div>';
+  const data = DB.getStockData();
+  document.getElementById('asPrice').placeholder = fmt(Math.round(data['moz'].price));
+}
+function adminAddNews(){
+  const val = document.getElementById('anNews').value.trim();
+  if(!val){ toast(t('fillAllFields')); return; }
+  const news = DB.getNews();
+  news.unshift(val);
+  if(news.length>20) news.pop();
+  DB.setNews(news);
+  document.getElementById('anNews').value='';
+  renderAdminStock(); renderNewsTicker();
+  toast(t('done'));
+}
+function adminDeleteNews(i){
+  const news = DB.getNews();
+  news.splice(i,1);
+  DB.setNews(news);
+  renderAdminStock(); renderNewsTicker();
+}
+function adminSetStockPrice(){
+  const price = parseFloat(document.getElementById('asPrice').value);
+  if(!price || price<=0){ toast(t('invalidAmount')); return; }
+  const data = DB.getStockData();
+  const rec = data['moz'];
+  rec.price = price;
+  rec.history.push(price);
+  if(rec.history.length>40) rec.history.shift();
+  DB.setStockData(data);
+  document.getElementById('asPrice').value='';
+  renderAdminStock();
+  toast(t('done'));
 }
 function renderAdminUsers(){
   const all = DB.getAllUsers();
   const arr = Object.values(all);
   const wrap = document.getElementById('adminUsersList');
-  if(arr.length===0){ wrap.innerHTML = '<div class="empty-state">کاربری ثبت نشده (فقط کاربران همین دستگاه نمایش داده می‌شوند)</div>'; return; }
+  if(arr.length===0){ wrap.innerHTML = '<div class="empty-state">'+t('noUsers')+'</div>'; return; }
   wrap.innerHTML = arr.map(u=>{
     const {cur} = getLevelInfo(u.bananas);
-    return `<div class="list-item">
-      <div>
-        <b>${u.name}</b><br>
-        <span class="muted">${cur.emoji} ${cur.name} — 🍌 ${fmt(u.bananas)}</span>
-      </div>
-      <button class="btn ${u.banned?'btn-ghost':'btn-danger'} small-btn" onclick="adminToggleBan('${u.id}')">${u.banned?'رفع مسدودیت':'مسدود کردن'}</button>
-    </div>`;
+    const joinDate = new Date(u.joinedAt).toLocaleDateString(LANG==='fa'?'fa-IR':'en-US');
+    return '<div class="list-item">'+
+      '<div>'+
+        '<b>'+u.name+'</b><br>'+
+        '<span class="muted">'+levelName(cur)+' — '+fmt(u.bananas)+'</span><br>'+
+        '<span class="muted">'+t('joinedOn')+' '+joinDate+' · '+(u.wallet||'-')+'</span>'+
+      '</div>'+
+      '<button class="btn '+(u.banned?'btn-ghost':'btn-danger')+' small-btn" onclick="adminToggleBan(\''+u.id+'\')">'+(u.banned?t('unban'):t('ban'))+'</button>'+
+    '</div>';
   }).join('');
 }
 function adminToggleBan(id){
@@ -1045,45 +1430,50 @@ function adminToggleBan(id){
 
 // ---------- City ----------
 function renderCity(){
+  updateFoodProduction();
   const lv = CURRENT_USER.cityLevel || 0;
   const tier = cityTierFor(lv);
-  document.getElementById('cityImg').innerHTML = tier.img ? `<img src="${tier.img}" alt="">` : tier.emoji;
-  document.getElementById('cityName').textContent = tier.name;
-  document.getElementById('cityLv').textContent = 'سطح '+lv+' از ۲۰';
+  document.getElementById('cityImg').innerHTML = tier.img ? '<img src="'+tier.img+'" alt="">' : '<svg class="icon"><use href="#i-city"/></svg>';
+  document.getElementById('cityName').textContent = tierName(tier);
+  document.getElementById('cityLv').textContent = (LANG==='fa'?'سطح ':'Level ')+lv+(LANG==='fa'?' از ۲۰':' / 20');
   document.getElementById('cityBar').style.width = Math.round((lv/20)*100)+'%';
 
   const btn = document.getElementById('cityUpBtn');
   const costLabel = document.getElementById('cityNextLabel');
   const costEl = document.getElementById('cityCost');
   if(lv >= 20){
-    costLabel.textContent = 'شهر به بالاترین سطح رسیده';
-    costEl.textContent = '🏆 حداکثر';
+    costLabel.textContent = t('cityMaxLevel');
+    costEl.innerHTML = '<svg class="icon"><use href="#i-trophy"/></svg>'+t('cityLevelMax');
     btn.disabled = true;
   } else {
     const cost = CITY_COSTS[lv];
-    costLabel.textContent = (lv===5 ? 'هزینه ارتقای مقام (سطح ۶)' : 'هزینه ارتقا به سطح '+(lv+1));
-    costEl.textContent = '🍌 '+fmt(cost);
+    costLabel.textContent = (lv===5 ? t('cityRankUpgrade') : t('cityUpgradeCostFmt')+' '+(lv+1));
+    costEl.innerHTML = '<svg class="icon icon-fill"><use href="#i-banana"/></svg>'+fmt(cost);
     btn.disabled = CURRENT_USER.bananas < cost;
   }
+  btn.textContent = t('cityUpgradeBtn');
 
-  document.getElementById('tierGrid').innerHTML = CITY_TIERS.map(t=>{
-    const on = t===tier;
-    return `<div class="tier-chip ${on?'on':''}">${t.emoji}<br>${t.name}</div>`;
+  document.getElementById('cityFoodStock').innerHTML = '<svg class="icon icon-fill"><use href="#i-banana"/></svg>'+(CURRENT_USER.foodStock||0);
+  const timeLeft = foodTimeLeftSec();
+  document.getElementById('cityFoodTimer').textContent = timeLeft==null ? '-' : formatTime(timeLeft);
+
+  document.getElementById('tierGrid').innerHTML = CITY_TIERS.map(tr=>{
+    const on = tr===tier;
+    return '<div class="tier-chip '+(on?'on':'')+'"><svg class="icon"><use href="#i-city"/></svg><br>'+tierName(tr)+'</div>';
   }).join('');
 }
 function upgradeCity(){
   const lv = CURRENT_USER.cityLevel || 0;
   if(lv>=20) return;
   const cost = CITY_COSTS[lv];
-  if(CURRENT_USER.bananas < cost){ toast('موز کافی نداری'); return; }
+  if(CURRENT_USER.bananas < cost){ toast(t('notEnoughBanana')); return; }
   CURRENT_USER.bananas -= cost;
   CURRENT_USER.cityLevel = lv+1;
   persistUser(); renderHeader(); renderCity();
-  toast('🎉 شهر ارتقا پیدا کرد!');
+  toast(t('cityUpgradedToast'), 'city');
 }
 
 // ---------- Stock market ----------
-function stockPrice(id){ return DB.getStockData()[id].price; }
 function simulateStocks(){
   const data = DB.getStockData();
   const now = Date.now();
@@ -1108,12 +1498,31 @@ function stockChangePct(hist){
   if(first===0) return 0;
   return ((last-first)/first)*100;
 }
-function sparkSvg(hist, w, h, colorVar){
-  const min = Math.min(...hist), max = Math.max(...hist);
-  const range = (max-min)||1;
+// smooth curve helper (Catmull-Rom -> cubic bezier)
+function buildSmoothPath(hist, w, h, padY){
+  padY = padY||6;
+  const min = Math.min(...hist), max = Math.max(...hist), range = (max-min)||1;
   const step = w/(hist.length-1||1);
-  const pts = hist.map((v,i)=> `${(i*step).toFixed(1)},${(h-((v-min)/range)*h).toFixed(1)}`).join(' ');
-  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="${colorVar}" stroke-width="2"/></svg>`;
+  const pts = hist.map((v,i)=>[i*step, h-padY-((v-min)/range)*(h-2*padY)]);
+  let d = 'M'+pts[0][0].toFixed(1)+','+pts[0][1].toFixed(1)+' ';
+  for(let i=0;i<pts.length-1;i++){
+    const p0 = pts[i-1]||pts[i];
+    const p1 = pts[i];
+    const p2 = pts[i+1];
+    const p3 = pts[i+2]||p2;
+    const c1x = p1[0]+(p2[0]-p0[0])/6, c1y = p1[1]+(p2[1]-p0[1])/6;
+    const c2x = p2[0]-(p3[0]-p1[0])/6, c2y = p2[1]-(p3[1]-p1[1])/6;
+    d += 'C'+c1x.toFixed(1)+','+c1y.toFixed(1)+' '+c2x.toFixed(1)+','+c2y.toFixed(1)+' '+p2[0].toFixed(1)+','+p2[1].toFixed(1)+' ';
+  }
+  return {d, pts};
+}
+function sparkSvg(hist, w, h, color){
+  const {d} = buildSmoothPath(hist, w, h, 3);
+  return '<svg class="spark" viewBox="0 0 '+w+' '+h+'"><path d="'+d+'" fill="none" stroke="'+color+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+function renderNewsTicker(){
+  const news = DB.getNews();
+  document.getElementById('newsTickerTrack').textContent = news.length ? news.join('   •   ') : t('noNews');
 }
 function renderStockList(){
   simulateStocks();
@@ -1123,16 +1532,16 @@ function renderStockList(){
     const rec = data[s.id];
     const pct = stockChangePct(rec.history);
     const up = pct>=0;
-    return `<div class="stock-item" onclick="openStock('${s.id}')">
-      <div class="st-top">
-        <div>
-          <div class="st-name">${s.name}</div>
-          <div class="st-price">🍌 ${fmt(Math.round(rec.price))}</div>
-          <div class="st-change ${up?'up':'down'}">${up?'▲':'▼'} ${Math.abs(pct).toFixed(1)}%</div>
-        </div>
-        ${sparkSvg(rec.history, 90, 34, up?'#3ECF6E':'#FF5C5C')}
-      </div>
-    </div>`;
+    return '<div class="stock-item" onclick="openStock(\''+s.id+'\')">'+
+      '<div class="st-top">'+
+        '<div>'+
+          '<div class="st-name"><svg class="icon icon-fill"><use href="#i-banana"/></svg>'+stockName(s)+'</div>'+
+          '<div class="st-price">'+fmt(Math.round(rec.price))+'</div>'+
+          '<div class="st-change '+(up?'up':'down')+'"><svg class="icon"><use href="#i-arrow-'+(up?'up':'down')+'"/></svg>'+Math.abs(pct).toFixed(1)+'%</div>'+
+        '</div>'+
+        sparkSvg(rec.history, 96, 36, up?'#3ECF6E':'#FF5C5C')+
+      '</div>'+
+    '</div>';
   }).join('');
 }
 let currentStockId = null;
@@ -1154,40 +1563,45 @@ function renderStockDetail(){
   const rec = DB.getStockData()[currentStockId];
   const pct = stockChangePct(rec.history);
   const up = pct>=0;
-  document.getElementById('sdName').textContent = s.name;
-  document.getElementById('sdPrice').textContent = '🍌 '+fmt(Math.round(rec.price));
+  document.getElementById('sdName').textContent = stockName(s);
+  document.getElementById('sdPrice').textContent = fmt(Math.round(rec.price));
   const chEl = document.getElementById('sdChange');
-  chEl.textContent = (up?'▲ ':'▼ ')+Math.abs(pct).toFixed(1)+'%';
+  chEl.innerHTML = '<svg class="icon"><use href="#i-arrow-'+(up?'up':'down')+'"/></svg>'+Math.abs(pct).toFixed(1)+'%';
   chEl.className = 'st-change '+(up?'up':'down');
 
   const owned = (CURRENT_USER.stocks[currentStockId])||0;
   document.getElementById('sdOwned').textContent = owned;
-  document.getElementById('sdValue').textContent = '🍌 '+fmt(Math.round(owned*rec.price));
+  document.getElementById('sdValue').textContent = fmt(Math.round(owned*rec.price));
 
-  // big chart
+  // big smooth chart with gradient fill
   const w=300,h=140, hist=rec.history;
-  const min=Math.min(...hist), max=Math.max(...hist), range=(max-min)||1;
-  const step = w/(hist.length-1||1);
-  const pts = hist.map((v,i)=> `${(i*step).toFixed(1)},${(h-((v-min)/range)*(h-16)-8).toFixed(1)}`).join(' ');
-  document.getElementById('sdChart').innerHTML = `<polyline points="${pts}" fill="none" stroke="${up?'#3ECF6E':'#FF5C5C'}" stroke-width="2.5"/>`;
+  const {d, pts} = buildSmoothPath(hist, w, h, 10);
+  const areaD = d + ' L'+pts[pts.length-1][0].toFixed(1)+','+h+' L0,'+h+' Z';
+  const color = up ? '#3ECF6E' : '#FF5C5C';
+  document.getElementById('sdChart').innerHTML =
+    '<defs><linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">'+
+    '<stop offset="0%" stop-color="'+color+'" stop-opacity="0.35"/>'+
+    '<stop offset="100%" stop-color="'+color+'" stop-opacity="0"/></linearGradient></defs>'+
+    '<path d="'+areaD+'" fill="url(#chartGrad)" stroke="none"/>'+
+    '<path d="'+d+'" fill="none" stroke="'+color+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>';
 }
 function tradeStock(type){
   if(!currentStockId) return;
   const qty = parseInt(document.getElementById('sdQty').value)||0;
-  if(qty<=0){ toast('تعداد معتبر وارد کن'); return; }
+  if(qty<=0){ toast(t('invalidQty')); return; }
   const data = DB.getStockData();
   const rec = data[currentStockId];
   const price = rec.price;
 
   if(type==='buy'){
     const cost = Math.round(price*qty);
-    if(CURRENT_USER.bananas < cost){ toast('موز کافی نداری'); return; }
+    if(CURRENT_USER.bananas < cost){ toast(t('notEnoughBanana')); return; }
     CURRENT_USER.bananas -= cost;
     CURRENT_USER.stocks[currentStockId] = (CURRENT_USER.stocks[currentStockId]||0) + qty;
     rec.price = price * (1 + Math.min(0.15, qty*0.004)); // demand nudges price up
   } else {
     const owned = CURRENT_USER.stocks[currentStockId]||0;
-    if(owned < qty){ toast('سهام کافی نداری'); return; }
+    if(owned < qty){ toast(t('notEnoughStock')); return; }
     const payout = Math.round(price*qty);
     CURRENT_USER.bananas += payout;
     CURRENT_USER.stocks[currentStockId] = owned - qty;
@@ -1199,7 +1613,68 @@ function tradeStock(type){
   CURRENT_USER.trades = (CURRENT_USER.trades||0) + 1;
   persistUser(); renderHeader();
   renderStockDetail();
-  toast(type==='buy' ? '✅ خرید انجام شد' : '✅ فروش انجام شد');
+  toast(type==='buy' ? t('tradeSuccessBuy') : t('tradeSuccessSell'), 'check');
+}
+
+// ---------- Bank ----------
+function renderBank(){
+  document.getElementById('bankCardName').textContent = CURRENT_USER.name;
+  document.getElementById('bankCardNumber').textContent = CURRENT_USER.cardNumber;
+  document.getElementById('bankBalanceVal').textContent = fmt(CURRENT_USER.bankBalance||0);
+  document.getElementById('bankWalletVal').textContent = CURRENT_USER.wallet;
+  document.getElementById('bankMainBalance').textContent = fmt(CURRENT_USER.bananas);
+}
+function openBankOp(type){
+  document.getElementById('bankModalTitle').textContent = t(type);
+  document.getElementById('bankModalBody').innerHTML =
+    '<div class="muted" style="margin-bottom:10px;text-align:center">'+
+      (type==='deposit' ? t('bananaBalance')+': '+fmt(CURRENT_USER.bananas) : t('bankBalanceLabel')+': '+fmt(CURRENT_USER.bankBalance||0))+
+    '</div>'+
+    '<input class="qty-input" id="bankOpAmount" type="number" placeholder="'+t('amount')+'" min="1">'+
+    '<button class="btn btn-main" style="width:100%" onclick="submitBankOp(\''+type+'\')">'+t('confirm')+'</button>';
+  document.getElementById('overlayModal').classList.add('active');
+  document.getElementById('bankModal').classList.add('active');
+}
+function submitBankOp(type){
+  const amt = parseInt(document.getElementById('bankOpAmount').value)||0;
+  if(amt<=0){ toast(t('invalidAmount')); return; }
+  if(type==='deposit'){
+    if(CURRENT_USER.bananas<amt){ toast(t('notEnoughBanana')); return; }
+    CURRENT_USER.bananas -= amt;
+    CURRENT_USER.bankBalance = (CURRENT_USER.bankBalance||0)+amt;
+  } else {
+    if((CURRENT_USER.bankBalance||0)<amt){ toast(t('notEnoughBank')); return; }
+    CURRENT_USER.bankBalance -= amt;
+    CURRENT_USER.bananas += amt;
+  }
+  persistUser(); renderHeader(); renderBank(); closeAllOverlays();
+  toast(t('done'),'check');
+}
+function openTransferModal(){
+  document.getElementById('bankModalTitle').textContent = t('transferToPlayer');
+  document.getElementById('bankModalBody').innerHTML =
+    '<div class="muted" style="margin-bottom:6px">'+t('yourWallet')+':<br><b style="direction:ltr;display:inline-block">'+CURRENT_USER.wallet+'</b></div>'+
+    '<div class="muted" style="margin-bottom:12px">'+t('bananaBalance')+': '+fmt(CURRENT_USER.bananas)+'</div>'+
+    '<div class="field"><label>'+t('destWallet')+'</label><input id="transferDestWallet" placeholder="BL..." style="direction:ltr"></div>'+
+    '<div class="field"><label>'+t('amount')+'</label><input id="transferAmount" type="number" placeholder="1000"></div>'+
+    '<button class="btn btn-main" style="width:100%" onclick="submitTransfer()">'+t('sendTransfer')+'</button>';
+  document.getElementById('overlayModal').classList.add('active');
+  document.getElementById('bankModal').classList.add('active');
+}
+function submitTransfer(){
+  const destWallet = document.getElementById('transferDestWallet').value.trim().toUpperCase();
+  const amt = parseInt(document.getElementById('transferAmount').value)||0;
+  if(!destWallet||amt<=0){ toast(t('invalidInput')); return; }
+  if(destWallet===CURRENT_USER.wallet){ toast(t('cantSelfTransfer')); return; }
+  if(CURRENT_USER.bananas<amt){ toast(t('notEnoughBanana')); return; }
+  const all = DB.getAllUsers();
+  const destId = Object.keys(all).find(id=>(all[id].wallet||'').toUpperCase()===destWallet);
+  if(!destId){ toast(t('walletNotFound')); return; }
+  CURRENT_USER.bananas -= amt;
+  all[destId].bananas = (all[destId].bananas||0) + amt;
+  DB.write('bl_users', all);
+  persistUser(); renderHeader(); closeAllOverlays(); renderBank();
+  toast(t('transferSuccess')+' '+fmt(amt)+' → '+all[destId].name,'check');
 }
 
 // ---------- Profile ----------
@@ -1207,16 +1682,18 @@ function renderProfile(){
   const {cur, next, pct} = getLevelInfo(CURRENT_USER.bananas);
   const avatarWrap = document.getElementById('pAvatarWrap');
   if(CURRENT_USER.photoUrl){
-    avatarWrap.innerHTML = `<img class="profile-avatar" src="${CURRENT_USER.photoUrl}" alt="">`;
+    avatarWrap.outerHTML = '<img class="profile-avatar" id="pAvatarWrap" src="'+CURRENT_USER.photoUrl+'" alt="">';
+  } else if(!document.getElementById('pAvatarWrap').classList.contains('profile-avatar') || document.getElementById('pAvatarWrap').tagName==='IMG'){
+    // no-op guard
   } else {
-    avatarWrap.outerHTML = `<div class="profile-avatar" id="pAvatarWrap">${(CURRENT_USER.name||'?').replace('@','').slice(0,1).toUpperCase()}</div>`;
+    document.getElementById('pAvatarWrap').textContent = (CURRENT_USER.name||'?').replace('@','').slice(0,1).toUpperCase();
   }
   document.getElementById('pName').textContent = CURRENT_USER.name;
   document.getElementById('pId').textContent = 'ID: '+CURRENT_USER.id;
-  document.getElementById('pLevelName').textContent = cur.emoji+' '+cur.name;
+  document.getElementById('pLevelName').textContent = levelName(cur);
   document.getElementById('pXpText').textContent = fmt(CURRENT_USER.bananas)+' / '+(next?fmt(next.need):'MAX');
   document.getElementById('pXpBar').style.width = pct+'%';
-  document.getElementById('pJoinDate').textContent = new Date(CURRENT_USER.joinedAt).toLocaleDateString('fa-IR');
+  document.getElementById('pJoinDate').textContent = new Date(CURRENT_USER.joinedAt).toLocaleDateString(LANG==='fa'?'fa-IR':'en-US');
   document.getElementById('pTrades').textContent = CURRENT_USER.trades||0;
 
   simulateStocks();
@@ -1225,23 +1702,24 @@ function renderProfile(){
   const holdings = Object.entries(CURRENT_USER.stocks||{}).filter(([id,q])=>q>0);
   holdings.forEach(([id,q])=>{ stockValue += (data[id]?data[id].price:0) * q; });
 
-  document.getElementById('paBananas').textContent = '🍌 '+fmt(CURRENT_USER.bananas);
-  document.getElementById('paStocks').textContent = '🍌 '+fmt(Math.round(stockValue));
+  document.getElementById('paBananas').textContent = fmt(CURRENT_USER.bananas);
+  document.getElementById('paStocks').textContent = fmt(Math.round(stockValue));
   document.getElementById('paCity').textContent = (CURRENT_USER.cityLevel||0)+' / 20';
 
   const holdWrap = document.getElementById('pHoldings');
   if(holdings.length===0){
-    holdWrap.innerHTML = '<div class="empty-state">هنوز سهامی نخریدی</div>';
+    holdWrap.innerHTML = '<div class="empty-state">'+t('noHoldings')+'</div>';
   } else {
     holdWrap.innerHTML = holdings.map(([id,q])=>{
       const s = STOCKS.find(x=>x.id===id);
       const price = data[id].price;
-      return `<div class="asset-row"><span>${s?s.name:id} × ${q}</span><b>🍌 ${fmt(Math.round(price*q))}</b></div>`;
+      return '<div class="asset-row"><span>'+(s?stockName(s):id)+' × '+q+'</span><b>'+fmt(Math.round(price*q))+'</b></div>';
     }).join('');
   }
 }
 
 // ---------- Init ----------
+applyLanguage();
 renderHeader();
 tryEnterAdminByHash();
 window.addEventListener('hashchange', tryEnterAdminByHash);
@@ -1249,9 +1727,18 @@ window.addEventListener('hashchange', tryEnterAdminByHash);
 // شبیه‌سازی نوسان قیمت سهام هر چند ثانیه — فقط وقتی صفحه بورس بازه رفرش می‌کنه
 setInterval(()=>{
   const stockScreenActive = document.getElementById('screen-stock').classList.contains('active');
-  if(!stockScreenActive) return;
-  if(currentStockId){ renderStockDetail(); } else { renderStockList(); }
+  if(stockScreenActive){
+    if(currentStockId){ renderStockDetail(); } else { renderStockList(); }
+  }
 }, 5000);
+
+// بروزرسانی هر ثانیه: تایمر باشگاه/حمام/غذای شهر وقتی صفحه خانه یا شهر باز است
+setInterval(()=>{
+  const homeActive = document.getElementById('screen-home').classList.contains('active');
+  const cityActive = document.getElementById('screen-city').classList.contains('active');
+  if(homeActive){ renderCareBoxes(); }
+  if(cityActive){ renderCity(); }
+}, 1000);
 </script>
 </body>
 </html>
